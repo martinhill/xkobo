@@ -9,26 +9,25 @@ HSCORE_DIR  = Library/Preferences/com.hatemogi.xkobo/scores
 
 .SUFFIXES: .cpp $(SUFFIXES)
 
-SRCS1= xkobo.cpp tiff.cpp file.cpp xlbacking.cpp xlcmap.cpp \
-       xlscroll.cpp xlchip.cpp enemy.cpp enemies.cpp \
+SRCS1= xkobo.cpp enemy.cpp enemies.cpp \
        myship.cpp key.cpp map.cpp radar.cpp screen.cpp manage.cpp \
        scenes.cpp score.cpp random.cpp
 
-SRCS2= getvclass.c xkp256.c
+# SRCS2= getvclass.c xkp256.c
 
 SRCS = $(SRCS1) $(SRCS2)
 
 DEFINES = -DWAIT_MSEC=$(WAIT_MSEC) -DSHIPS=$(SHIPS) \
           -DXKOBO_SCORE_DIR=\"$(HSCORE_DIR)\"
 
-CFLAGS=$(DEFINES) 
+CFLAGS=$(DEFINES)
 CCOPTIONS = #-Wall -g -pg
 
 LOCAL_LIBRARIES = -lX11 # -L/usr/X11/lib -L/opt/local/lib -lX11
 
-OBJS = $(SRCS1:.cpp=.o) $(SRCS2:.c=.o)
+OBJS = $(SRCS1:.cpp=.o) # $(SRCS2:.c=.o)
 
-xkobo: $(OBJS) $(DEPLIBS)
+xkobo.bc: $(OBJS) $(DEPLIBS)
 	$(CXX) -o $@ $(OBJS) $(LDOPTIONS) $(LOCAL_LIBRARIES) $(LDLIBS) $(EXTRA_LOAD_FLAGS)
 
 .cpp.o:
@@ -53,4 +52,4 @@ install:
 
 
 clean:
-	$(RM) xkobo *.o 
+	$(RM) xkobo.bc *.o 

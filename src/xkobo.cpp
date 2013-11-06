@@ -29,6 +29,9 @@ extern "C"{
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifdef EMSCRIPTEN
+#include <emscripten.h>
+#endif
 }
 #include "xkobo.h"
 #include "config.h"
@@ -50,6 +53,7 @@ int             mouse_y = 0;
 int             cheat_mode;
 
 static int      signal_delivered = 1;
+static int      wait_msec;
 
 static void sig_handle(int)
 {
@@ -138,19 +142,32 @@ void put_score()
     exit(0);
 }
 
+static int one_iter_result = 0;
+void one_iter() {
+    if (wait_msec && (signal_delivered == 0)) pause();
+    signal_delivered = 0;
+    one_iter_result = manage.mainloop();
+#ifdef EMSCRIPTEN
+    if ( one_iter_result ) {
+        emscripten_cancel_main_loop();
+    }
+#endif
+}
+
 /*           xkobo          */
+
 
 int main(int argc, char *argv[])
 {
     int sprite_policy = 1;
     int cmap_policy = 1;
-    int wait_msec = WAIT_MSEC;
     struct itimerval value, ovalue;
     struct sigaction sig_act;
     int i;
     
     scale_log2 = 0;
     cheat_mode = 0;
+    wait_msec = WAIT_MSEC;
     for (i=1; i<argc; i++){
         if (!strcmp("-speed", argv[i]))
             sprite_policy = 0;
@@ -238,11 +255,17 @@ int main(int argc, char *argv[])
     value.it_value.tv_usec = wait_msec * 1000;
     setitimer(ITIMER_REAL, &value, &ovalue);
     
+#ifdef EMSCRIPTEN
+    emscripten_set_main_loop(one_iter, 0, false);
+#else
     for (;;){
-        if (wait_msec && (signal_delivered == 0)) pause();
-        signal_delivered = 0;
-        if (manage.mainloop()) break;
+        one_iter();
+        // kludge to get result form void function
+        if ( one_iter_result ) break;
     }
+#endif
     
     return 0;
 }
+
+
