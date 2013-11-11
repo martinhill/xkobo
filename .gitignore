@@ -2,5 +2,7 @@
 *.o
 *.bc
 tags
+xkobo.html
+*.map
 
 
