@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>xkobo</title>
+    <style>
+      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
+      textarea.emscripten { font-family: monospace; width: 80%; }
+      div.emscripten { text-align: center; }
+      div.emscripten_border { border: 1px solid black; height:300px }
+      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+      canvas.emscripten { border: 0px none; }
+      #stats { width:100%; bottom:24px; left:0px; }
+      #playbutton { position:absolute; top:50%; left:50%; margin-left:-137px; 
+          margin-top:-25px; width:256px; height:32px; padding:16px; border-radius:16px; 
+          border:2px solid black; background:#666666; color:white; 
+          text-decoration:none; display:block; font-size:32px; line-height:32px; 
+          font-family:arial; font-weight:bold; text-align:center; }
+      #playbutton:hover { background:red; }
+      #viewport { width:326px; height:250px; position:absolute; overflow:hidden; background:black; color:white;
+          top:10px; left:50%; margin-left:-163px; margin-top:30px; }
+      #level { position:absolute; width:2048px; height:100%; top:0px; left:0px; background:black; }
+      #background { position:absolute; margin:0; padding:0; border:0; outline:0; 
+          overflow:hidden; width:100%; height:100%; top:0px; left:0px; background:black; }
+      .sprite { position:absolute; margin:0; padding:0; border:0; outline:0; 
+          background-image:url(resources/xkp256.png); width:16px; height:16px; }
+      .text { position:absolute; background:black; color:white; }
+    </style>
+  </head>
+  <body>
+    <hr/>
+    <div class="emscripten" id="status">Downloading...</div>
+    <div class="emscripten">
+      <progress value="0" max="100" id="progress" hidden=1></progress>  
+    </div>
+    <div class="emscripten_border">
+     <div id="viewport"><div id="background"><div id="level"></div></div></div>
+     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    </div>
+    <!--a id='playbutton' href='javascript:startBenchmark()'>Click to start</a-->
+    <div id='stats'></div>
+    <hr/>
+    <div class="emscripten">
+      <input type="checkbox" id="resize">Resize canvas
+      <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
+      &nbsp;&nbsp;&nbsp;
+      <input type="button" value="Fullscreen" onclick="Module.requestFullScreen(document.getElementById('pointerLock').checked, 
+                                                                                document.getElementById('resize').checked)">
+    </div>
+    
+    <hr/>
+    <textarea class="emscripten" id="output" rows="8"></textarea>
+    <hr>
+    <script type='text/javascript'>
+      // connect to canvas
+      var Module = {
+        preRun: [],
+        postRun: [],
+        print: (function() {
+          var element = document.getElementById('output');
+          element.value = ''; // clear browser cache
+          return function(text) {
+            text = Array.prototype.slice.call(arguments).join(' ');
+            // These replacements are necessary if you render to raw HTML
+            //text = text.replace(/&/g, "&amp;");
+            //text = text.replace(/</g, "&lt;");
+            //text = text.replace(/>/g, "&gt;");
+            //text = text.replace('\n', '<br>', 'g');
+            element.value += text + "\n";
+            element.scrollTop = 99999; // focus on bottom
+          };
+        })(),
+        printErr: function(text) {
+          text = Array.prototype.slice.call(arguments).join(' ');
+          if (0) { // XXX disabled for safety typeof dump == 'function') {
+            dump(text + '\n'); // fast, straight to the real console
+          } else {
+            console.log(text);
+          }
+        },
+        viewport: document.getElementById('viewport'),
+        background: document.getElementById('background'),
+        level: document.getElementById('level'),
+        canvas: document.getElementById('canvas'),
+        playbutton: document.getElementById('playbutton'),
+        setStatus: function(text) {
+          if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var statusElement = document.getElementById('status');
+          var progressElement = document.getElementById('progress');
+          if (m) {
+            text = m[1];
+            progressElement.value = parseInt(m[2])*100;
+            progressElement.max = parseInt(m[4])*100;
+            progressElement.hidden = false;
+          } else {
+            progressElement.value = null;
+            progressElement.max = null;
+            progressElement.hidden = true;
+          }
+          statusElement.innerHTML = text;
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
+      };
+      Module.setStatus('Downloading...');
+    </script>
+    <script type='text/javascript'>{{{ SCRIPT_CODE }}}</script>
+  </body>
+</html>

@@ -23,10 +23,12 @@
 #ifndef XKOBO_H_KEY
 #define XKOBO_H_KEY
 
+#ifndef EMSCRIPTEN
 extern "C"{
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 }
+#endif
 #include "config.h"
 
 #define KEY_DOWN      XK_KP_2
@@ -53,8 +55,8 @@ class _key{
   public:
     static void init();
     static void clear();
-    static void press(KeySym sym);
-    static void release(KeySym sym);
+//    static void press(KeySym sym);
+//    static void release(KeySym sym);
     static void change_up(unsigned long r);
     static void change_down(unsigned long r);
     static void change_left(unsigned long r);

@@ -29,24 +29,26 @@ extern "C"{
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+}
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
+#include "js.h"
+#else
+#include "tiff.h"
+#include "key.h"
 #endif
-}
 #include "xkobo.h"
 #include "config.h"
-#include "tiff.h"
 #include "screen.h"
 #include "manage.h"
 #include "score.h"
-#include "key.h"
 #include "random.h"
 #include "version.h"
 
 win_cmap        wbase;
 win_chip        wchip;
 win_backing     wradar;
-win_backing     wscore;
+//win_backing     wscore;
 int             scale_log2;
 int             mouse_x = 0;
 int             mouse_y = 0;
@@ -60,6 +62,7 @@ static void sig_handle(int)
     signal_delivered = 1;
 }
 
+#ifndef EMSCRIPTEN
 void key_press_callback(win&)
 {
     KeySym sym;
@@ -121,6 +124,7 @@ void client_message_callback(win&)
         _manage::exit_key();
     }
 }
+#endif
 
 void put_usage()
 {
@@ -148,6 +152,7 @@ void one_iter() {
     signal_delivered = 0;
     one_iter_result = manage.mainloop();
 #ifdef EMSCRIPTEN
+    // kludge to get result form void function
     if ( one_iter_result ) {
         emscripten_cancel_main_loop();
     }
@@ -190,6 +195,8 @@ int main(int argc, char *argv[])
         else put_usage();
     }
 
+#ifdef EMSCRIPTEN
+#else
     wbase .event(ClientMessage, &client_message_callback);
     wscore.event(ClientMessage, &client_message_callback);
     wbase .event(FocusIn,       &focus_in_callback      );
@@ -200,6 +207,7 @@ int main(int argc, char *argv[])
     wchip .event(ButtonRelease, &button_release_callback);
     wchip .event(MotionNotify,  &motion_callback        );
     wchip .event(LeaveNotify,   &leave_callback         );
+#endif
     
     wbase.make(NULL, 0, 0,
                MARGIN * 3 + ((WSIZE + MAP_SIZEX) << scale_log2),
@@ -215,7 +223,11 @@ int main(int argc, char *argv[])
                 MAP_SIZEX << scale_log2, MAP_SIZEY << scale_log2);
     wscore.make(NULL, 0, 0, WSCORE_SIZEX, WSCORE_SIZEY);
     
+#ifndef EMSCRIPTEN
     if (link_tiff(spdata, wbase, wchip)) return 1;
+#else
+    SpriteInit();
+#endif
     
     wbase.title("xkobo");
     wbase.set_wm_close();
@@ -253,18 +265,22 @@ int main(int argc, char *argv[])
     value.it_interval.tv_usec = wait_msec * 1000;
     value.it_value.tv_sec = 0;
     value.it_value.tv_usec = wait_msec * 1000;
-    setitimer(ITIMER_REAL, &value, &ovalue);
     
 #ifdef EMSCRIPTEN
     emscripten_set_main_loop(one_iter, 0, false);
 #else
+    setitimer(ITIMER_REAL, &value, &ovalue);
+
     for (;;){
         one_iter();
-        // kludge to get result form void function
-        if ( one_iter_result ) break;
+        if ( one_iter_result ) {
+            break;
+        }
     }
 #endif
     
+//    animate();
+
     return 0;
 }
 

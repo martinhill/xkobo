@@ -5,13 +5,14 @@ WAIT_MSEC   = 30
 SHIPS       = 5
 
 #  RECORDS  
-HSCORE_DIR  = Library/Preferences/com.hatemogi.xkobo/scores
+#HSCORE_DIR  = Library/Preferences/com.hatemogi.xkobo/scores
 
 .SUFFIXES: .cpp $(SUFFIXES)
 
-SRCS1= xkobo.cpp enemy.cpp enemies.cpp \
+SRCS1= xkobo.cpp enemy.cpp enemies.cpp file.cpp \
        myship.cpp key.cpp map.cpp radar.cpp screen.cpp manage.cpp \
-       scenes.cpp score.cpp random.cpp
+       scenes.cpp score.cpp random.cpp \
+       webcmap.cpp webwin.cpp webbacking.cpp webchip.cpp webscroll.cpp
 
 # SRCS2= getvclass.c xkp256.c
 

@@ -20,26 +20,19 @@
  * 
  */
 
-#ifndef XKOBO_H_XKOBO
-#define XKOBO_H_XKOBO
+#ifndef XKOBO_H_JS
+#define XKOBO_H_JS
 
-#ifdef EMSCRIPTEN
-#include "webchip.h"
-#include "webcmap.h"
-#else
-#include "xlchip.h"
-#include "xlcmap.h"
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-extern win_chip wchip;
-extern win_cmap wbase;
-extern win_backing wradar;
-extern win_backing wscore;
-extern int scale_log2;
-extern int mouse_x, mouse_y;
-extern int cheat_mode;
-extern "C" {
-    extern unsigned char spdata[];
-}
+extern void SpriteInit();
+extern void animate();
+extern void AddTextElement(int x, int y, char* text);
 
-#endif // XKOBO_H_XKOBO
+#ifdef __cplusplus
+}
+#endif
+
+#endif // XKOBO_H_JS

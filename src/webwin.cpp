@@ -3,6 +3,8 @@
  * XKOBO, a video-oriented game
  * Copyright (C) 1995,1996  Akira Higuchi
  *     a-higuti@math.hokudai.ac.jp
+ *      Martin Hill
+ *      martin@hillm.net
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -20,26 +22,54 @@
  * 
  */
 
-#ifndef XKOBO_H_XKOBO
-#define XKOBO_H_XKOBO
+extern "C"{
+#include <stdio.h>
+#include <stdlib.h>
+}
+#include "webwin.h"
 
-#ifdef EMSCRIPTEN
-#include "webchip.h"
-#include "webcmap.h"
-#else
-#include "xlchip.h"
-#include "xlcmap.h"
-#endif
+char       win::disp_string[1024] = {0};
 
-extern win_chip wchip;
-extern win_cmap wbase;
-extern win_backing wradar;
-extern win_backing wscore;
-extern int scale_log2;
-extern int mouse_x, mouse_y;
-extern int cheat_mode;
-extern "C" {
-    extern unsigned char spdata[];
+
+//--------------------------------------------------------------------------//
+//                     class     win                                        //
+//--------------------------------------------------------------------------//
+
+win::win()
+{
+    mask = 0;
+    ecount = 0;
 }
 
-#endif // XKOBO_H_XKOBO
+win::~win()
+{
+}   
+
+void win::make(win *back,int wx,int wy,int sizex,int sizey)
+{
+    if (mask == -1) return;
+    x = wx;
+    y = wy;
+    sx = sizex;
+    sy = sizey;
+
+    mask = -1;
+}
+
+
+void win::setowner(void *owner)
+{
+    ownerobject = owner;
+}
+
+void *win::getowner()
+{
+    return ownerobject;
+}
+
+
+int win::eventloop()
+{
+    return 1;
+}
+

@@ -54,6 +54,7 @@ void _key::clear()
     shot      = 0;
 }
 
+#ifndef EMSCRIPTEN
 void _key::press(KeySym sym)
 {
     if      (sym == KEY_LEFT ) left  = 1;
@@ -101,6 +102,7 @@ void _key::release(KeySym sym)
     else if (sym == KEY_SHOT ) shot  = 0;
     _key::change();
 }
+#endif
 
 void _key::change_up(unsigned long r)
 {

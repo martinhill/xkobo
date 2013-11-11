@@ -20,26 +20,48 @@
  * 
  */
 
-#ifndef XKOBO_H_XKOBO
-#define XKOBO_H_XKOBO
+#include "webscroll.h"
 
-#ifdef EMSCRIPTEN
-#include "webchip.h"
-#include "webcmap.h"
-#else
-#include "xlchip.h"
-#include "xlcmap.h"
-#endif
+//--------------------------------------------------------------------------//
+//                     class     win_scroll                                 //
+//--------------------------------------------------------------------------//
 
-extern win_chip wchip;
-extern win_cmap wbase;
-extern win_backing wradar;
-extern win_backing wscore;
-extern int scale_log2;
-extern int mouse_x, mouse_y;
-extern int cheat_mode;
-extern "C" {
-    extern unsigned char spdata[];
+win_scroll::win_scroll()
+{
+    ;
 }
 
-#endif // XKOBO_H_XKOBO
+win_scroll::~win_scroll()
+{
+    ;
+}
+
+void win_scroll::make(win *back,int wx,int wy, int sizex,int sizey,
+                      int vsizex, int vsizey)
+{
+    vsx = vsizex;
+    vsy = vsizey;
+    vx  = 0;
+    vy  = 0;
+    this->win::make(back,wx,wy,sizex,sizey);
+}
+
+void win_scroll::clear()
+{
+}
+
+void win_scroll::expose_backing()
+{
+}
+
+void win_scroll::set_position(int vposx, int vposy)
+{
+    vx = vposx;
+    vy = vposy;
+}
+
+void win_scroll::torus()
+{
+    int x = vsx - sx;
+    int y = vsy - sy;
+}

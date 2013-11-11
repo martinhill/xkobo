@@ -20,26 +20,33 @@
  * 
  */
 
-#ifndef XKOBO_H_XKOBO
-#define XKOBO_H_XKOBO
-
-#ifdef EMSCRIPTEN
-#include "webchip.h"
 #include "webcmap.h"
-#else
-#include "xlchip.h"
-#include "xlcmap.h"
-#endif
 
-extern win_chip wchip;
-extern win_cmap wbase;
-extern win_backing wradar;
-extern win_backing wscore;
-extern int scale_log2;
-extern int mouse_x, mouse_y;
-extern int cheat_mode;
-extern "C" {
-    extern unsigned char spdata[];
+//--------------------------------------------------------------------------//
+//                     class     win_cmap                                   //
+//--------------------------------------------------------------------------//
+
+
+win_cmap::win_cmap()
+{
 }
 
-#endif // XKOBO_H_XKOBO
+win_cmap::~win_cmap()
+{
+}
+
+void win_cmap::make(win *back,int wx,int wy,int sizex,int sizey,
+                    int use_private)
+{
+    this->win_backing::make(back,wx,wy,sizex,sizey);
+}
+
+void win_cmap::cmset()
+{
+}
+
+
+unsigned long win_cmap::search_near(long r, long g, long b)
+{
+    return 0;
+}
