@@ -73,3 +73,7 @@ int win::eventloop()
     return 1;
 }
 
+void win::setId(int id)
+{
+    pId = id;
+}

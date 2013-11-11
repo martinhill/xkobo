@@ -195,8 +195,7 @@ int main(int argc, char *argv[])
         else put_usage();
     }
 
-#ifdef EMSCRIPTEN
-#else
+#ifndef EMSCRIPTEN
     wbase .event(ClientMessage, &client_message_callback);
     wscore.event(ClientMessage, &client_message_callback);
     wbase .event(FocusIn,       &focus_in_callback      );
@@ -226,7 +225,9 @@ int main(int argc, char *argv[])
 #ifndef EMSCRIPTEN
     if (link_tiff(spdata, wbase, wchip)) return 1;
 #else
-    SpriteInit();
+    SpriteDemoInit();
+    wbase.setId(0);
+    wchip.setId(1);
 #endif
     
     wbase.title("xkobo");
@@ -279,7 +280,7 @@ int main(int argc, char *argv[])
     }
 #endif
     
-//    animate();
+//    SpriteDemoAnimate();
 
     return 0;
 }

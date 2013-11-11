@@ -43,6 +43,7 @@ class win {
     void (*ec[EVENTMAX])(win& w);
     void *ownerobject;
     static char disp_string[1024];
+    int pId;
     
   public:
     static Display *disp;
@@ -71,6 +72,7 @@ class win {
     void *getowner();
     void appeal(char *name) {};
     void setborder(unsigned long color) {};
+    void setId(int id);
 };
 
 #endif // XKOBO_H_WEBWIN
