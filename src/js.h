@@ -27,9 +27,11 @@
 extern "C" {
 #endif
 
-extern void SpriteInit();
-extern void animate();
-extern void AddTextElement(int x, int y, char* text);
+extern void SpriteDemoInit();
+extern void SpriteDemoAnimate();
+extern void SelectFont(int parentId, char* s);
+extern void AddTextElement(int parentId, int x, int y, char* text);
+extern void ClearElements(int parentId);
 
 #ifdef __cplusplus
 }

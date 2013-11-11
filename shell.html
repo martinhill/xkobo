@@ -8,7 +8,7 @@
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       textarea.emscripten { font-family: monospace; width: 80%; }
       div.emscripten { text-align: center; }
-      div.emscripten_border { border: 1px solid black; height:300px }
+      div.emscripten_border { border: 1px solid black; height:250px }
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten { border: 0px none; }
       #stats { width:100%; bottom:24px; left:0px; }
@@ -19,13 +19,15 @@
           font-family:arial; font-weight:bold; text-align:center; }
       #playbutton:hover { background:red; }
       #viewport { width:326px; height:250px; position:absolute; overflow:hidden; background:black; color:white;
-          top:10px; left:50%; margin-left:-163px; margin-top:30px; }
+          left:50%; margin-left:-163px; }
       #level { position:absolute; width:2048px; height:100%; top:0px; left:0px; background:black; }
-      #background { position:absolute; margin:0; padding:0; border:0; outline:0; 
-          overflow:hidden; width:100%; height:100%; top:0px; left:0px; background:black; }
+      #wchip { position:absolute; margin:12px; padding:0; border:0; outline:0; 
+          overflow:hidden; width:226px; height:226px; top:0px; left:0px; background:black; }
       .sprite { position:absolute; margin:0; padding:0; border:0; outline:0; 
           background-image:url(resources/xkp256.png); width:16px; height:16px; }
-      .text { position:absolute; background:black; color:white; }
+      .normal { position:absolute; background:black; color:white; font-family:helvetica; font-weight:bold; font-size:12px; }
+      .title { position:absolute; background:black; color:white; font-family:"New Century Schoolbook", serif; 
+              font-weight:bold; font-size:24px; margin-top:-12px }
     </style>
   </head>
   <body>
@@ -35,7 +37,7 @@
       <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
     <div class="emscripten_border">
-     <div id="viewport"><div id="background"><div id="level"></div></div></div>
+       <div id="viewport"><div id="wchip"><div id="level"></div></div></div>
      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
     <!--a id='playbutton' href='javascript:startBenchmark()'>Click to start</a-->
@@ -79,11 +81,22 @@
             console.log(text);
           }
         },
+        // next 3 attributes used by demo animation code - remove when no longer needed!
         viewport: document.getElementById('viewport'),
-        background: document.getElementById('background'),
+        background: document.getElementById('wchip'),
         level: document.getElementById('level'),
+
         canvas: document.getElementById('canvas'),
         playbutton: document.getElementById('playbutton'),
+        fontmap: { 
+            def:"text",
+            "-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1":"normal",
+            "-adobe-new century schoolbook-bold-r-normal--24-240-75-75-p-149-*":"title"
+        },
+        parentmap: {
+            0: document.getElementById('viewport'),
+            1: document.getElementById('wchip'),
+        },
         setStatus: function(text) {
           if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);
           var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);

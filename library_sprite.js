@@ -6,6 +6,8 @@ LibrarySprite = {
     $Sprite__deps: ['$FS'],
     $Sprite: {
         value: 0,
+        // for each parent div, keep track of class for new elements
+        currentTextClass: {},
         init: function(viewport, level, background) {
             Sprite.viewport = viewport;
             Sprite.level = level;
@@ -245,23 +247,41 @@ LibrarySprite = {
             Sprite.checkFPS();
             // bounce the sprites around and scroll the level
             Sprite.animateSprites();
-        }
+        },
 
     },
 
-    SpriteInit: function() {
+    SpriteDemoInit: function() {
         Sprite.init(Module['viewport'], Module['level'], Module['background']);
     },
 
-    animate: function() {
+    SpriteDemoAnimate: function() {
         Sprite.animate();
     },
 
-    AddTextElement: function(x, y, text) {
-        var parent = Sprite.viewport;
+    clear: function(parentId) {
+        var parent = Module.parentmap[parentId];
+        if ( parent === null ) {
+            Module.printError("clear: invalid parentId " + parentId);
+            return;
+        }
+        while ( parent.firstChild ) {
+            parent.removeChild(parent.firstChild);
+        }
+    },
+
+    SelectFont: function(parentId, s) {
+        s = Pointer_stringify(s);
+        Sprite.currentTextClass[parentId] = Module.fontmap[s] || Module.fontmap.def;
+        //Module.print('SelectFont(' + s + '): ' + Sprite.currentTextClass[parentId]);
+    },
+    
+    AddTextElement: function(parentId, x, y, text) {
+        text = Pointer_stringify(text);
+        var parent = Module.parentmap[parentId] || Module.viewport;
         // create a DOM sprite
         var element = document.createElement("div");
-        element.className = 'text';
+        element.className = Sprite.currentTextClass[parentId];
         element.innerHTML = text;
         // optimized pointer to style object
         var style = element.style;
@@ -269,6 +289,7 @@ LibrarySprite = {
         style.top = y + 'px';
         // put it into the game window
         parent.appendChild(element);
+        //Module.print('AddTextElement(' + x + ', ' + y + ', ' + text + ')');
     }
 
 };

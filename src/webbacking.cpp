@@ -51,6 +51,7 @@ void win_backing::expose_backing()
 
 void win_backing::clear()
 {
+    ClearElements(pId);
 }
 
 void win_backing::clear(int x,int y,int h,int v)
@@ -67,13 +68,19 @@ void win_backing::background(int i)
 
 void win_backing::font(char *s)
 {
+    SelectFont(pId, s);
 }
 
 void win_backing::warp_pointer(int x, int y)
 {
 }
 
+void win_backing::string_back(int x,int y,char *t)
+{ 
+    AddTextElement(pId, x,y,t); 
+}
+
 void win_backing::string(int x,int y,char *t)
 { 
-    AddTextElement(x,y,t); 
+    AddTextElement(pId, x,y,t); 
 }

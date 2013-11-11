@@ -55,7 +55,7 @@ class win_backing : public win{
         // XDrawPoint(disp,p,gc,x,y);}
     inline void point(int x,int y){};
         // XDrawPoint(disp,p,gc,x,y);XDrawPoint(disp,w,gc,x,y);}
-    inline void string_back(int x,int y,char *t){};
+    void string_back(int x,int y,char *t);
         // XDrawImageString(disp,p,gc,x,y,t,strlen(t));}
     void string(int x,int y,char *t);
         // XDrawImageString(disp,p,gc,x,y,t,strlen(t));
