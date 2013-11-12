@@ -32,6 +32,8 @@ extern void SpriteDemoAnimate();
 extern void SelectFont(int parentId, char* s);
 extern void AddTextElement(int parentId, int x, int y, char* text);
 extern void ClearElements(int parentId);
+extern void Events_Init();
+extern void PollEvent();
 
 #ifdef __cplusplus
 }

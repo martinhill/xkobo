@@ -228,6 +228,7 @@ int main(int argc, char *argv[])
     SpriteDemoInit();
     wbase.setId(0);
     wchip.setId(1);
+    wradar.setId(2);
 #endif
     
     wbase.title("xkobo");

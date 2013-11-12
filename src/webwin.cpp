@@ -27,6 +27,7 @@ extern "C"{
 #include <stdlib.h>
 }
 #include "webwin.h"
+#include "js.h"
 
 char       win::disp_string[1024] = {0};
 
@@ -77,3 +78,9 @@ void win::setId(int id)
 {
     pId = id;
 }
+
+int win::xcheckevent() {
+    return 0;
+}
+
+

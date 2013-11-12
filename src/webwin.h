@@ -31,7 +31,7 @@ extern "C"{
 #include <string.h>
 }
 
-class Display {};
+//class Display {};
 
 class win {
 
@@ -46,13 +46,11 @@ class win {
     int pId;
     
   public:
-    static Display *disp;
+    //static Display *disp;
 //    static int scr;
-    static inline void xnextevent(){}
-    static inline  int xpending(){return 0;}
-    static inline void xsync(){}
-    static inline void xflush(){}
-    static inline int xcheckevent(){return 0;}
+    static inline void xsync(){};
+    static inline void xflush(){};
+    static int xcheckevent();
     static inline void set_disp_string(char *t){
         strncpy(disp_string, t, 1024);}
     

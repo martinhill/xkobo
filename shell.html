@@ -22,12 +22,15 @@
           left:50%; margin-left:-163px; }
       #level { position:absolute; width:2048px; height:100%; top:0px; left:0px; background:black; }
       #wchip { position:absolute; margin:12px; padding:0; border:0; outline:0; 
-          overflow:hidden; width:226px; height:226px; top:0px; left:0px; background:black; }
+               overflow:hidden; width:226px; height:226px; top:0px; left:0px; background:DarkSlateGray; }
+      #wradar { position:absolute; padding:0; border:0; outline:0;
+                overflow:hidden; width:64px; height:128px; top:110px; left:250px; background:#213041; }
       .sprite { position:absolute; margin:0; padding:0; border:0; outline:0; 
-          background-image:url(resources/xkp256.png); width:16px; height:16px; }
-      .normal { position:absolute; background:black; color:white; font-family:helvetica; font-weight:bold; font-size:12px; }
-      .title { position:absolute; background:black; color:white; font-family:"New Century Schoolbook", serif; 
-              font-weight:bold; font-size:24px; margin-top:-12px }
+                background-image:url(resources/xkp256.png); width:16px; height:16px; }
+      .normal { position:absolute; background:black; color:white; 
+                font-family:helvetica; font-weight:bold; font-size:12px; margin-top:-8px }
+      .title { position:absolute; background:black; color:#cbffff; font-family:"New Century Schoolbook", serif; 
+              font-weight:bold; font-size:24px; margin-top:-16px }
     </style>
   </head>
   <body>
@@ -37,7 +40,7 @@
       <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
     <div class="emscripten_border">
-       <div id="viewport"><div id="wchip"><div id="level"></div></div></div>
+        <div id="viewport"><div id="wchip"><div id="background"><div id="level"></div></div></div><div id="wradar"></div></div>
      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
     <!--a id='playbutton' href='javascript:startBenchmark()'>Click to start</a-->
@@ -81,21 +84,29 @@
             console.log(text);
           }
         },
-        // next 3 attributes used by demo animation code - remove when no longer needed!
         viewport: document.getElementById('viewport'),
-        background: document.getElementById('wchip'),
+        wchip: document.getElementById('wchip'),
+        // next 3 attributes used by demo animation code - remove when no longer needed!
+        background: document.getElementById('background'),
         level: document.getElementById('level'),
+        playbutton: document.getElementById('playbutton'),
 
         canvas: document.getElementById('canvas'),
-        playbutton: document.getElementById('playbutton'),
         fontmap: { 
             def:"text",
             "-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1":"normal",
             "-adobe-new century schoolbook-bold-r-normal--24-240-75-75-p-149-*":"title"
         },
+        parents: [ document.getElementById('viewport'), 
+                    document.getElementById('wchip'),
+                    document.getElementById('level'),
+                    document.getElementById('background'),
+                    document.getElementById('wradar'),],
+
         parentmap: {
             0: document.getElementById('viewport'),
             1: document.getElementById('wchip'),
+            2: document.getElementById('wradar'),
         },
         setStatus: function(text) {
           if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);

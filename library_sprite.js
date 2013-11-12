@@ -8,6 +8,7 @@ LibrarySprite = {
         value: 0,
         // for each parent div, keep track of class for new elements
         currentTextClass: {},
+        events: [],
         init: function(viewport, level, background) {
             Sprite.viewport = viewport;
             Sprite.level = level;
@@ -249,25 +250,50 @@ LibrarySprite = {
             Sprite.animateSprites();
         },
 
+        receiveEvent: function(event) {
+            Sprite.events.push(event);
+        }
     },
 
     SpriteDemoInit: function() {
-        Sprite.init(Module['viewport'], Module['level'], Module['background']);
+        Sprite.init(Module['wchip'], Module['level'], Module['background']);
     },
 
     SpriteDemoAnimate: function() {
         Sprite.animate();
     },
 
-    clear: function(parentId) {
+    SpriteInit: function() {
+        if (!Module['doNotCaptureKeyboard']) {
+            document.addEventListener("keydown", Sprite.receiveEvent);
+            document.addEventListener("keyup", Sprite.receiveEvent);
+            document.addEventListener("keypress", Sprite.receiveEvent);
+        }
+
+    },
+
+    PollEvent: function(ptr) {
+        if (Sprite.events.length === 0) return 0;
+        if (ptr) {
+            Sprite.makeCEvent(Sprite.events.shift(), ptr);
+        }
+        return 1;
+    },
+
+    ClearElements: function(parentId) {
         var parent = Module.parentmap[parentId];
-        if ( parent === null ) {
-            Module.printError("clear: invalid parentId " + parentId);
+        if ( !parent  ) {
+            Module.printErr("clear: invalid parentId " + parentId);
             return;
         }
-        while ( parent.firstChild ) {
-            parent.removeChild(parent.firstChild);
+        var child;
+        for ( child in parent.childNodes ) {
+            // Remove only non-container "parent" elements
+            if ( ! child in Module.parents ) {
+                parent.removeChild(child);
+            }
         }
+        //Module.print('ClearElements(' + parentId + ')');
     },
 
     SelectFont: function(parentId, s) {
@@ -289,7 +315,7 @@ LibrarySprite = {
         style.top = y + 'px';
         // put it into the game window
         parent.appendChild(element);
-        //Module.print('AddTextElement(' + x + ', ' + y + ', ' + text + ')');
+        //Module.print('AddTextElement('+ parentId + ', ' + x + ', ' + y + ', ' + text + ')');
     }
 
 };
