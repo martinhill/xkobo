@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
 #ifndef EMSCRIPTEN
     if (link_tiff(spdata, wbase, wchip)) return 1;
 #else
-    SpriteDemoInit();
+    //SpriteDemoInit();
     wbase.setId(0);
     wchip.setId(1);
     wradar.setId(2);

@@ -12,25 +12,22 @@
       /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten { border: 0px none; }
       #stats { width:100%; bottom:24px; left:0px; }
-      #playbutton { position:absolute; top:50%; left:50%; margin-left:-137px; 
-          margin-top:-25px; width:256px; height:32px; padding:16px; border-radius:16px; 
-          border:2px solid black; background:#666666; color:white; 
-          text-decoration:none; display:block; font-size:32px; line-height:32px; 
-          font-family:arial; font-weight:bold; text-align:center; }
+      #playbutton { width:200px; padding:4px; border-radius:16px; border:2px solid black; background:#666666; color:white; 
+          text-decoration:none; font-family:arial; font-weight:bold; text-align:center; }
       #playbutton:hover { background:red; }
       #viewport { width:326px; height:250px; position:absolute; overflow:hidden; background:black; color:white;
           left:50%; margin-left:-163px; }
       #level { position:absolute; width:2048px; height:100%; top:0px; left:0px; background:black; }
       #wchip { position:absolute; margin:12px; padding:0; border:0; outline:0; 
-               overflow:hidden; width:226px; height:226px; top:0px; left:0px; background:DarkSlateGray; }
+               overflow:hidden; width:226px; height:226px; top:0px; left:0px; background:black; }
       #wradar { position:absolute; padding:0; border:0; outline:0;
                 overflow:hidden; width:64px; height:128px; top:110px; left:250px; background:#213041; }
       .sprite { position:absolute; margin:0; padding:0; border:0; outline:0; 
                 background-image:url(resources/xkp256.png); width:16px; height:16px; }
       .normal { position:absolute; background:black; color:white; 
-                font-family:helvetica; font-weight:bold; font-size:12px; margin-top:-8px }
+                font-family:helvetica; font-weight:bold; font-size:12px; margin-top:-10px }
       .title { position:absolute; background:black; color:#cbffff; font-family:"New Century Schoolbook", serif; 
-              font-weight:bold; font-size:24px; margin-top:-16px }
+              font-weight:bold; font-size:26px; margin-top:-22px }
     </style>
   </head>
   <body>
@@ -43,7 +40,6 @@
         <div id="viewport"><div id="wchip"><div id="background"><div id="level"></div></div></div><div id="wradar"></div></div>
      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
-    <!--a id='playbutton' href='javascript:startBenchmark()'>Click to start</a-->
     <div id='stats'></div>
     <hr/>
     <div class="emscripten">
@@ -52,6 +48,8 @@
       &nbsp;&nbsp;&nbsp;
       <input type="button" value="Fullscreen" onclick="Module.requestFullScreen(document.getElementById('pointerLock').checked, 
                                                                                 document.getElementById('resize').checked)">
+      &nbsp;&nbsp;
+      <a id='playbutton' href='javascript:startBenchmark()'>start demo</a>
     </div>
     
     <hr/>
@@ -132,6 +130,14 @@
         }
       };
       Module.setStatus('Downloading...');
+      // start your engines!
+      function startBenchmark()
+      {
+        playbutton.style.display = 'none';
+        Sprite.init(Module['wchip'], Module['level'], Module['background']);
+        Sprite.animate();
+      }
+
     </script>
     <script type='text/javascript'>{{{ SCRIPT_CODE }}}</script>
   </body>
