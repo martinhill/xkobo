@@ -44,7 +44,7 @@ class win_cmap : public win_backing{
     ~win_cmap();
     void make(win *back,int wx, int wy, int sizex, int sizey, int use_private);
     void cmset();
-    unsigned long alloc_color(long r, long g, long b) {return 0;};
+    unsigned long alloc_color(long r, long g, long b);
 };
 
 #endif // XKOBO_H_WEBCMAP

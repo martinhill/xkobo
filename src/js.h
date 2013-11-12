@@ -30,6 +30,8 @@ extern "C" {
 extern void SpriteDemoInit();
 extern void SpriteDemoAnimate();
 extern void SelectFont(int parentId, char* s);
+extern void SetForegroundColor(int parentId, int color);
+extern void SetBackgroundColor(int parentId, int color);
 extern void AddTextElement(int parentId, int x, int y, char* text);
 extern void ClearElements(int parentId);
 extern void Events_Init();

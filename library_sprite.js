@@ -8,6 +8,8 @@ LibrarySprite = {
         value: 0,
         // for each parent div, keep track of class for new elements
         currentTextClass: {},
+        currentFgColor: {},
+        currentBgColor: {},
         events: [],
         init: function(viewport, level, background) {
             Sprite.viewport = viewport;
@@ -301,6 +303,16 @@ LibrarySprite = {
         Sprite.currentTextClass[parentId] = Module.fontmap[s] || Module.fontmap.def;
         //Module.print('SelectFont(' + s + '): ' + Sprite.currentTextClass[parentId]);
     },
+
+    SetForegroundColor: function(parentId, color) {
+        Sprite.currentFgColor[parentId] = color;
+        Module.print('foreground for ' + parentId + ' is ' + color);
+    },
+    
+    SetBackgroundColor: function(parentId, color) {
+        Sprite.currentBgColor[parentId] = color;
+        Module.print('background for ' + parentId + ' is ' + color);
+    },
     
     AddTextElement: function(parentId, x, y, text) {
         text = Pointer_stringify(text);
@@ -311,6 +323,11 @@ LibrarySprite = {
         element.innerHTML = text;
         // optimized pointer to style object
         var style = element.style;
+        // set color
+        var fgcolor = Sprite.currentFgColor[parentId];
+        if ( fgcolor ) {
+            style.color = '#' + fgcolor.toString(16);
+        }
         style.left = x + 'px';
         style.top = y + 'px';
         // put it into the game window

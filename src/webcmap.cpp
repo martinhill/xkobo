@@ -45,6 +45,9 @@ void win_cmap::cmset()
 {
 }
 
+unsigned long win_cmap::alloc_color(long r, long g, long b) {
+    return ( ((r & 0xff00) << 8) | (g & 0xff00) | ((b & 0xff00) >> 8) );
+}
 
 unsigned long win_cmap::search_near(long r, long g, long b)
 {

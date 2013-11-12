@@ -60,10 +60,12 @@ void win_backing::clear(int x,int y,int h,int v)
 
 void win_backing::foreground(int i)
 {
+    SetForegroundColor(pId, i);
 }
 
 void win_backing::background(int i)
 {
+    SetBackgroundColor(pId, i);
 }
 
 void win_backing::font(char *s)
