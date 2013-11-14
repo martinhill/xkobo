@@ -254,6 +254,18 @@ LibrarySprite = {
 
         receiveEvent: function(event) {
             Sprite.events.push(event);
+            
+            if (Sprite.events.length >= 10000) {
+                Module.printErr('event queue full, dropping events');
+                Sprite.events = Sprite.events.slice(0, 10000);
+            }
+
+            switch ( event.type ) {
+                case "keydown": case "keyup": {
+                    //Module.print('Received ' + event.type + ' event. Keycode = ' + event.keyCode);
+                }
+            }
+
         }
     },
 
@@ -269,17 +281,47 @@ LibrarySprite = {
         if (!Module['doNotCaptureKeyboard']) {
             document.addEventListener("keydown", Sprite.receiveEvent);
             document.addEventListener("keyup", Sprite.receiveEvent);
-            document.addEventListener("keypress", Sprite.receiveEvent);
+            //document.addEventListener("keypress", Sprite.receiveEvent);
         }
 
     },
 
-    PollEvent: function(ptr) {
-        if (Sprite.events.length === 0) return 0;
-        if (ptr) {
-            Sprite.makeCEvent(Sprite.events.shift(), ptr);
+    PollEvent: function() {
+        if ( Sprite.events.length > 0 ) {
+            Sprite.event = Sprite.events.shift();
+            Module.print('Polled ' + Sprite.event.type + ' event. Keycode = ' + Sprite.event.keyCode);
+            return 1;
         }
-        return 1;
+        Sprite.event = undefined;
+        return 0;
+    },
+
+    GetEventType: function() {
+        if ( Sprite.event ) {
+            var eventType = Module.eventTypes[Sprite.event.type];
+            Module.print('EventType ' + eventType);
+            return eventType;
+        }
+        Module.print('event undefined');
+    },
+
+    GetEventKeycode: function() {
+        if ( Sprite.event ) {
+            
+            switch (Sprite.event.type) {
+                case 'keydown': case 'keyup': {
+                    var down = Sprite.event.type === 'keydown';
+                    //Module.print('Received key event: ' + event.keyCode);
+                    var key = Sprite.event.keyCode;
+                    if (key >= 65 && key <= 90) {
+                        key += 32; // make lowercase for SDL
+                    }
+                    Module.print('Got ' + Sprite.event.type + ' event. Keycode = ' + key);
+                    return key;
+                }
+            }
+        }
+        return 0;
     },
 
     ClearElements: function(parentId) {
@@ -306,12 +348,12 @@ LibrarySprite = {
 
     SetForegroundColor: function(parentId, color) {
         Sprite.currentFgColor[parentId] = color;
-        Module.print('foreground for ' + parentId + ' is ' + color);
+        //Module.print('foreground for ' + parentId + ' is ' + color);
     },
     
     SetBackgroundColor: function(parentId, color) {
         Sprite.currentBgColor[parentId] = color;
-        Module.print('background for ' + parentId + ' is ' + color);
+        //Module.print('background for ' + parentId + ' is ' + color);
     },
     
     AddTextElement: function(parentId, x, y, text) {
@@ -333,8 +375,12 @@ LibrarySprite = {
         // put it into the game window
         parent.appendChild(element);
         //Module.print('AddTextElement('+ parentId + ', ' + x + ', ' + y + ', ' + text + ')');
-    }
+    },
 
+    XDebug: function(str) {
+        str = Pointer_stringify(str);
+        console.log(str);
+    }
 };
 
 autoAddDeps(LibrarySprite, "$Sprite");

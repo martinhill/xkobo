@@ -38,8 +38,9 @@ char       win::disp_string[1024] = {0};
 
 win::win()
 {
-    mask = 0;
-    ecount = 0;
+    for ( int i = 0; i < EVENTMAX; i++ ) {
+        ec[i] = NULL;
+    }
 }
 
 win::~win()
@@ -48,13 +49,13 @@ win::~win()
 
 void win::make(win *back,int wx,int wy,int sizex,int sizey)
 {
-    if (mask == -1) return;
+//    if (mask == -1) return;
     x = wx;
     y = wy;
     sx = sizex;
     sy = sizey;
 
-    mask = -1;
+//    mask = -1;
 }
 
 
@@ -68,10 +69,30 @@ void *win::getowner()
     return ownerobject;
 }
 
+int win::event(int etyp,void (*c)(win& w))
+{
+    if ( etyp >= 0 && etype < EVENTMAX ) {
+        ec[etyp] = c;
+    }
+    return 0;
+}
 
 int win::eventloop()
 {
+    etype = GetEventType();
+    //keycode = GetEventKeycode();
+
+    if ( etype >= 0 && etype < EVENTMAX && ec[etype] ) {
+        ec[etype](*this);
+    }
     return 1;
+}
+
+int win::getKeycode() {
+    if ( etype == KeyPress || etype == KeyRelease ) {
+        return GetEventKeycode();
+    }
+    return 0;
 }
 
 void win::setId(int id)
@@ -80,7 +101,7 @@ void win::setId(int id)
 }
 
 int win::xcheckevent() {
-    return 0;
+    return PollEvent();
 }
 
 

@@ -23,19 +23,29 @@
 #ifndef XKOBO_H_JS
 #define XKOBO_H_JS
 
+
+#define KeyPress                2
+#define KeyRelease              3
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern void SpriteDemoInit();
-extern void SpriteDemoAnimate();
+// DOM
 extern void SelectFont(int parentId, char* s);
 extern void SetForegroundColor(int parentId, int color);
 extern void SetBackgroundColor(int parentId, int color);
 extern void AddTextElement(int parentId, int x, int y, char* text);
 extern void ClearElements(int parentId);
-extern void Events_Init();
-extern void PollEvent();
+
+// Events
+extern void  SpriteInit();
+extern int   PollEvent();
+extern int   GetEventType();
+extern int   GetEventKeycode();
+
+extern void  XDebug(char* msg);
 
 #ifdef __cplusplus
 }

@@ -27,7 +27,9 @@
 #include "myship.h"
 #include "key.h"
 #include "radar.h"
+extern "C" {
 #include "scenes.h"
+}
 #include "config.h"
 #include "random.h"
 #include "version.h"

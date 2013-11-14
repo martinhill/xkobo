@@ -42,7 +42,8 @@ void win_backing::make(win *back,int wx,int wy,int sizex,int sizey)
 
 int win_backing::eventloop()
 {
-    return 0;
+    if (this->win::eventloop() == 0) return 0;
+    return 1;
 }
 
 void win_backing::expose_backing()

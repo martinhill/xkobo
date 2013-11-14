@@ -25,7 +25,7 @@
 #ifndef XKOBO_H_WEBWIN
 #define XKOBO_H_WEBWIN
   
-#define EVENTMAX 33
+#define EVENTMAX 4
 
 extern "C"{
 #include <string.h>
@@ -37,13 +37,12 @@ class win {
 
   protected:
     int x,y,sx,sy;
-    long mask;
-    int ecount;
-    int etype[EVENTMAX];
     void (*ec[EVENTMAX])(win& w);
     void *ownerobject;
     static char disp_string[1024];
     int pId;
+    int etype;
+    //int keycode;
     
   public:
     //static Display *disp;
@@ -56,7 +55,7 @@ class win {
     
     win();
     virtual ~win();
-    int event(int etyp,void (*c)(win& w)){return 0;};
+    int event(int etyp,void (*c)(win& w));
     int event(int etyp,unsigned int emask,void (*c)(win& w)){return 0;};
     void make(win *back=NULL,int wx=0,int wy=0,int sizex=200,int sizey=200);
     void map() {};
@@ -71,6 +70,7 @@ class win {
     void appeal(char *name) {};
     void setborder(unsigned long color) {};
     void setId(int id);
+    int getKeycode();
 };
 
 #endif // XKOBO_H_WEBWIN

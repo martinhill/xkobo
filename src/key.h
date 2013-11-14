@@ -28,6 +28,40 @@ extern "C"{
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 }
+#else
+#include "js.h"
+
+typedef unsigned long KeySym;
+
+#define XK_KP_0			0xFFB0
+#define XK_KP_1			0xFFB1
+#define XK_KP_2			0xFFB2
+#define XK_KP_3			0xFFB3
+#define XK_KP_4			0xFFB4
+#define XK_KP_5			0xFFB5
+#define XK_KP_6			0xFFB6
+#define XK_KP_7			0xFFB7
+#define XK_KP_8			0xFFB8
+#define XK_KP_9			0xFFB9
+
+#define XK_s                   0x073
+#define XK_q                   0x071
+#define XK_m                   0x06d
+#define XK_n                   0x06e
+
+#define XK_Shift_L		0xFFE1	/* Left shift */
+
+#define XK_Home			0xFF50
+#define XK_Left			0xFF51	/* Move left, left arrow */
+#define XK_Up			0xFF52	/* Move up, up arrow */
+#define XK_Right		0xFF53	/* Move right, right arrow */
+#define XK_Down			0xFF54	/* Move down, down arrow */
+#define XK_Prior		0xFF55	/* Prior, previous */
+#define XK_Page_Up		0xFF55
+#define XK_Next			0xFF56	/* Next */
+#define XK_Page_Down		0xFF56
+#define XK_End			0xFF57	/* EOL */
+#define XK_Begin		0xFF58	/* BOL */
 #endif
 #include "config.h"
 
@@ -55,8 +89,8 @@ class _key{
   public:
     static void init();
     static void clear();
-//    static void press(KeySym sym);
-//    static void release(KeySym sym);
+    static void press(KeySym sym);
+    static void release(KeySym sym);
     static void change_up(unsigned long r);
     static void change_down(unsigned long r);
     static void change_left(unsigned long r);

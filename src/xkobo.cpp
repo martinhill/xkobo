@@ -35,8 +35,8 @@ extern "C"{
 #include "js.h"
 #else
 #include "tiff.h"
-#include "key.h"
 #endif
+#include "key.h"
 #include "xkobo.h"
 #include "config.h"
 #include "screen.h"
@@ -124,6 +124,16 @@ void client_message_callback(win&)
         _manage::exit_key();
     }
 }
+#else
+void key_press_callback(win& w)
+{
+    key.press(w.getKeycode());
+}
+
+void key_release_callback(win& w)
+{
+    key.release(w.getKeycode());
+}
 #endif
 
 void put_usage()
@@ -200,12 +210,16 @@ int main(int argc, char *argv[])
     wscore.event(ClientMessage, &client_message_callback);
     wbase .event(FocusIn,       &focus_in_callback      );
     wbase .event(FocusOut,      &focus_out_callback     );
+#endif
     wbase .event(KeyPress,      &key_press_callback     );
     wbase .event(KeyRelease,    &key_release_callback   );
+#ifndef EMSCRIPTEN
     wchip .event(ButtonPress,   &button_press_callback  );
     wchip .event(ButtonRelease, &button_release_callback);
     wchip .event(MotionNotify,  &motion_callback        );
     wchip .event(LeaveNotify,   &leave_callback         );
+#else
+    SpriteInit();
 #endif
     
     wbase.make(NULL, 0, 0,
