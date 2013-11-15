@@ -27,9 +27,7 @@
 #include "myship.h"
 #include "key.h"
 #include "radar.h"
-extern "C" {
 #include "scenes.h"
-}
 #include "config.h"
 #include "random.h"
 #include "version.h"
@@ -117,7 +115,7 @@ void _screen::init_scene(int sc)
     }
     scene_num = sc % scene_max;
     level     = sc / scene_max;
-    _scene *s = &scene[scene_num];
+    const _scene *s = &scene[scene_num];
     
     map.init();
     int i;
@@ -131,7 +129,7 @@ void _screen::init_scene(int sc)
 int _screen::prepare()
 {
     if (scene_num < 0) return 0;
-    _scene *s = &scene[scene_num];
+    const _scene *s = &scene[scene_num];
     int i,j;
     int count_core=0;
     int c=0;
@@ -185,7 +183,7 @@ void _screen::generate_fixed_enemies()
       { 0, 12, 23, 30, 32, 30, 23, 12, 0, -12, -23, -30, -32, -30, -23, -12};
     static int cost[16] =
       { 32, 30, 23, 12, 0, -12, -23, -30, -32, -30, -23, -12, 0, 12, 23, 30};
-    _scene *s = &scene[scene_num];
+    const _scene *s = &scene[scene_num];
     if (generate_count < s->enemy_max){
         int j;
         for (j=0; j<s->enemy[generate_count].num; j++){

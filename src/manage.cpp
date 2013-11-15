@@ -25,7 +25,6 @@ extern "C"{
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <unistd.h>
 }
 #include "xkobo.h"
 #include "screen.h"

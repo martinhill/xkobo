@@ -289,7 +289,7 @@ LibrarySprite = {
     PollEvent: function() {
         if ( Sprite.events.length > 0 ) {
             Sprite.event = Sprite.events.shift();
-            Module.print('Polled ' + Sprite.event.type + ' event. Keycode = ' + Sprite.event.keyCode);
+            //Module.print('Polled ' + Sprite.event.type + ' event. Keycode = ' + Sprite.event.keyCode);
             return 1;
         }
         Sprite.event = undefined;
@@ -299,7 +299,7 @@ LibrarySprite = {
     GetEventType: function() {
         if ( Sprite.event ) {
             var eventType = Module.eventTypes[Sprite.event.type];
-            Module.print('EventType ' + eventType);
+            //Module.print('EventType ' + eventType);
             return eventType;
         }
         Module.print('event undefined');

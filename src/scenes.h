@@ -39,7 +39,7 @@ typedef struct {
     int x, y, h, v;
 } _base;
 
-typedef const struct {
+typedef struct {
     int ratio;
     int startx;
     int starty;
@@ -55,6 +55,6 @@ typedef const struct {
     _base base[SCENE_BASE_MAX];
 } _scene;
 
-extern _scene scene[];
+extern const _scene scene[];
 
 #endif // XKOBO_H_SCENES

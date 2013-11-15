@@ -22,7 +22,7 @@
 
 #include "scenes.h"
 
-_scene scene[] = {
+const _scene scene[] = {
     /* 1 */
     {
         0, 32, 96,
