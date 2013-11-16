@@ -49,13 +49,13 @@ typedef unsigned long KeySym;
 #define XK_m                   0x06d
 #define XK_n                   0x06e
 
-#define XK_Shift_L		0xFFE1	/* Left shift */
+#define XK_Shift_L		16      /* 0xFFE1	Left shift */
 
 #define XK_Home			0xFF50
-#define XK_Left			0xFF51	/* Move left, left arrow */
-#define XK_Up			0xFF52	/* Move up, up arrow */
-#define XK_Right		0xFF53	/* Move right, right arrow */
-#define XK_Down			0xFF54	/* Move down, down arrow */
+#define XK_Left			37      /* 0xFF51	Move left, left arrow */
+#define XK_Up			38      /* 0xFF52	Move up, up arrow */
+#define XK_Right		39      /* 0xFF53	Move right, right arrow */
+#define XK_Down			40      /* 0xFF54	Move down, down arrow */
 #define XK_Prior		0xFF55	/* Prior, previous */
 #define XK_Page_Up		0xFF55
 #define XK_Next			0xFF56	/* Next */

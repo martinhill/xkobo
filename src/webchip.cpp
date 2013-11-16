@@ -21,6 +21,7 @@
  */
 
 #include "webchip.h"
+#include "js.h"
      
 win_chip::win_chip()
 {
@@ -38,6 +39,7 @@ void win_chip::make(win *back,int wx,int wy, int sizex,int sizey,
     csx = csizex;
     csy = csizey;
     store_policy = policy;   /* 0 : speed   1 : memory */
+    SpriteInit(pId);
 }
 
 void win_chip::torus_copy_from_chip_and_store(int x, int y, int h, int v,
@@ -59,6 +61,7 @@ void win_chip::torus_copy_from_chip_and_store(int x, int y, int h, int v,
 void win_chip::copy_from_chip_and_store(int x, int y, int h, int v,
                                               int x1, int x2)
 {
+    SpriteUpdate(x, y, h, v, x1, x2);
 }
 
 int win_chip::clip(int& cx, int& cy, int& x, int& y, int& h, int& v)
@@ -94,4 +97,12 @@ void win_chip::set_position(int vposx, int vposy)
     vx = vposx;
     vy = vposy;
     _sprite *spp;
+
+    //SpriteBeginUpdate();
+    for ( spp = sprite; spp < spr_max; spp++ ) {
+        SpriteUpdate(spp->cx, spp->cy, spp->h, spp->v, spp->x-vx, spp->y-vy);
+    }
+    SpriteEndUpdate();
+
+    spr_max = sprite;
 }

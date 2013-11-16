@@ -12,6 +12,7 @@ LibrarySprite = {
         currentBgColor: {},
         events: [],
         init: function(viewport, level, background) {
+            Sprite.maxSprites = Module['maxSprites']; 
             Sprite.viewport = viewport;
             Sprite.level = level;
             Sprite.background = background;
@@ -89,6 +90,7 @@ LibrarySprite = {
                 {
                     // add one new animated sprite
                     Sprite.sprites[Sprite.spriteCount] = new Sprite.SpriteX();
+                    demoInit(Sprite.sprites[Sprite.spritecount]);
                     Sprite.spriteCount++;
                 }
 
@@ -97,6 +99,7 @@ LibrarySprite = {
                 {
                     // also add tiles to the static level geometry
                     Sprite.levelSprites[Sprite.levelSpriteCount] = new Sprite.SpriteX(Sprite.level);
+                    demoInit(Sprite.levelSprites[Sprite.spritecount]);
                     Sprite.levelSpriteCount++;
                 }
             }
@@ -151,6 +154,29 @@ LibrarySprite = {
             }
         },
 
+        demoInit: function(sprite) {
+            // random starting position
+            if (sprite.parent == level) 
+            {
+                sprite.x = Math.round(Math.random() * Sprite.levelW);
+                sprite.y = Math.round(Math.random() * Sprite.levelH);
+            }
+            else // regular sprite in the viewport
+            {
+                sprite.x = Math.round(Math.random() * Sprite.viewportW);
+                sprite.y = Math.round(Math.random() * Sprite.viewportH);
+            }
+            sprite.reposition();
+            // give it a random speed
+            sprite.xSpeed = Math.round(Math.random() * 10) - 5;
+            sprite.ySpeed = Math.round(Math.random() * 10) - 5;
+            // no still sprites
+            if (sprite.xSpeed == 0) sprite.xSpeed  = 1;
+            if (sprite.ySpeed == 0) sprite.ySpeed  = 1;
+            // random spritesheet frame
+            sprite.frame(Sprite.spriteCount);
+        },
+
         // the sprite class - DOM sprite version
         SpriteX: (function() {
             function SpriteX (parentElement) {
@@ -173,6 +199,17 @@ LibrarySprite = {
             (-1 * (Math.round(num / Sprite.spritesheetXFrames) % Sprite.spritesheetYFrames)) 
             * Sprite.spritesheetFrameHeight + 'px ';
                 };
+                this.framexy = function(x, y) {
+                    if (!this) return;
+                    this.style.backgroundPosition =
+                        (-1 * x) + 'px ' + (-1 * y) + 'px ';
+                };
+                this.show = function() {
+                    this.style.visibility = 'visible';
+                };
+                this.hide = function() {
+                    this.style.visibility = 'hidden';
+                };
                 // removes a sprite from a container DOM element
                 this.destroy = function () {
                     if (!this) return;
@@ -185,26 +222,6 @@ LibrarySprite = {
                 this.element.className = 'sprite';
                 // optimized pointer to style object
                 this.style = this.element.style;
-                // random starting position
-                if (this.parent == level) 
-                {
-                    this.x = Math.round(Math.random() * Sprite.levelW);
-                    this.y = Math.round(Math.random() * Sprite.levelH);
-                }
-                else // regular sprite in the viewport
-                {
-                    this.x = Math.round(Math.random() * Sprite.viewportW);
-                    this.y = Math.round(Math.random() * Sprite.viewportH);
-                }
-                this.reposition();
-                // give it a random speed
-                this.xSpeed = Math.round(Math.random() * 10) - 5;
-                this.ySpeed = Math.round(Math.random() * 10) - 5;
-                // no still sprites
-                if (this.xSpeed == 0) this.xSpeed  = 1;
-                if (this.ySpeed == 0) this.ySpeed  = 1;
-                // random spritesheet frame
-                this.frame(Sprite.spriteCount);
                 // put it into the game window
                 this.parent.appendChild(this.element);
             }
@@ -277,13 +294,47 @@ LibrarySprite = {
         Sprite.animate();
     },
 
-    SpriteInit: function() {
+    SpriteInit: function(parentId) {
         if (!Module['doNotCaptureKeyboard']) {
             document.addEventListener("keydown", Sprite.receiveEvent);
             document.addEventListener("keyup", Sprite.receiveEvent);
             //document.addEventListener("keypress", Sprite.receiveEvent);
         }
 
+        Sprite.init(Module['wchip'], Module['level'], Module['background']);
+        var parent = Module.parentmap[parentId];
+        Sprite.sprites = new Array(Sprite.maxSprites);
+        for ( var i = 0; i < Sprite.maxSprites; i++ ) {
+            Sprite.sprites[i] = new Sprite.SpriteX(parent);
+            Sprite.sprites[i].hide();
+        }
+        Sprite.saveUpdateIndex = 0;
+    },
+
+    SpriteBeginUpdate: function() {
+        Sprite.updateIndex = 0;
+    },
+
+    SpriteUpdate: function(cx, cy, h, v, x, y) {
+        if ( Sprite.updateIndex < Sprite.maxSprites ) {
+            var sprite = Sprite.sprites[Sprite.updateIndex++];
+            sprite.framexy(cx, cy);
+            sprite.x = x;
+            sprite.y = y;
+            sprite.reposition();
+            sprite.show();
+            //Module.print('SpriteUpdate( ' + cx + ', ' + cy + ', ' + h + ', ' + v + ', ' + x + ', ' + y + ')');
+        }
+    },
+
+    SpriteEndUpdate: function() {
+        // hide all the sprites from updateIndex to saveUpdateIndex
+        for ( var i = Sprite.updateIndex; i < Sprite.saveUpdateIndex; i++ ) {
+            Sprite.sprites[i].hide();
+        }
+
+        Sprite.saveUpdateIndex = Sprite.updateIndex;
+        Sprite.updateIndex = 0;
     },
 
     PollEvent: function() {
@@ -316,7 +367,7 @@ LibrarySprite = {
                     if (key >= 65 && key <= 90) {
                         key += 32; // make lowercase for SDL
                     }
-                    Module.print('Got ' + Sprite.event.type + ' event. Keycode = ' + key);
+                    //Module.print('Got ' + Sprite.event.type + ' event. Keycode = ' + key);
                     return key;
                 }
             }
@@ -334,10 +385,15 @@ LibrarySprite = {
         for ( child in parent.childNodes ) {
             // Remove only non-container "parent" elements
             if ( ! child in Module.parents ) {
-                parent.removeChild(child);
+                if ( child.className != 'sprite' ) {
+                    parent.removeChild(child);
+                } else {
+                    // only hide sprites - don't remove from DOM
+                    child.style.visibility = 'hidden';
+                }
             }
         }
-        //Module.print('ClearElements(' + parentId + ')');
+        Module.print('ClearElements(' + parentId + ')');
     },
 
     SelectFont: function(parentId, s) {

@@ -111,6 +111,7 @@
                       'keydown': 2,
                       'keyup': 3
         },
+        maxSprites: 1024,
         setStatus: function(text) {
           if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);
           var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);

@@ -2,7 +2,8 @@
 *.o
 *.bc
 tags
+clip
 xkobo.html
 *.map
-
+xkobo.app/**
 

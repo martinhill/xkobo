@@ -219,7 +219,10 @@ int main(int argc, char *argv[])
     wchip .event(MotionNotify,  &motion_callback        );
     wchip .event(LeaveNotify,   &leave_callback         );
 #else
-    SpriteInit();
+    //SpriteDemoInit();
+    wbase.setId(0);
+    wchip.setId(1);
+    wradar.setId(2);
 #endif
     
     wbase.make(NULL, 0, 0,
@@ -238,11 +241,6 @@ int main(int argc, char *argv[])
     
 #ifndef EMSCRIPTEN
     if (link_tiff(spdata, wbase, wchip)) return 1;
-#else
-    //SpriteDemoInit();
-    wbase.setId(0);
-    wchip.setId(1);
-    wradar.setId(2);
 #endif
     
     wbase.title("xkobo");

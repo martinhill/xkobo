@@ -32,6 +32,11 @@
 extern "C" {
 #endif
 
+extern void SpriteInit(int parentId);
+extern void SpriteBeginUpdate();
+extern void SpriteUpdate(int cx, int cy, int h, int v, int x, int y);
+extern void SpriteEndUpdate();
+
 // DOM
 extern void SelectFont(int parentId, char* s);
 extern void SetForegroundColor(int parentId, int color);
@@ -40,12 +45,11 @@ extern void AddTextElement(int parentId, int x, int y, char* text);
 extern void ClearElements(int parentId);
 
 // Events
-extern void  SpriteInit();
-extern int   PollEvent();
-extern int   GetEventType();
-extern int   GetEventKeycode();
+extern int  PollEvent();
+extern int  GetEventType();
+extern int  GetEventKeycode();
 
-extern void  XDebug(char* msg);
+extern void XDebug(char* msg);
 
 #ifdef __cplusplus
 }
