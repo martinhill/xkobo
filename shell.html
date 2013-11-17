@@ -17,7 +17,7 @@
       #playbutton:hover { background:red; }
       #viewport { width:326px; height:250px; position:absolute; overflow:hidden; background:black; color:white;
           left:50%; margin-left:-163px; }
-      #level { position:absolute; width:2048px; height:100%; top:0px; left:0px; background:black; }
+      #map { position:absolute; width:2048px; height:100%; top:0px; left:0px; background:black; }
       #wchip { position:absolute; margin:12px; padding:0; border:0; outline:0; 
                overflow:hidden; width:226px; height:226px; top:0px; left:0px; background:black; }
       #wradar { position:absolute; padding:0; border:0; outline:0;
@@ -37,7 +37,7 @@
       <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
     <div class="emscripten_border">
-        <div id="viewport"><div id="wchip"><div id="background"><div id="level"></div></div></div><div id="wradar"></div></div>
+        <div id="viewport"><div id="wchip"><div id="background"><div id="map"></div></div></div><div id="wradar"></div></div>
      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     </div>
     <div id='stats'></div>
@@ -86,7 +86,7 @@
         wchip: document.getElementById('wchip'),
         // next 3 attributes used by demo animation code - remove when no longer needed!
         background: document.getElementById('background'),
-        level: document.getElementById('level'),
+        map: document.getElementById('map'),
         playbutton: document.getElementById('playbutton'),
 
         canvas: document.getElementById('canvas'),
@@ -97,7 +97,7 @@
         },
         parents: [ document.getElementById('viewport'), 
                     document.getElementById('wchip'),
-                    document.getElementById('level'),
+                    document.getElementById('map'),
                     document.getElementById('background'),
                     document.getElementById('wradar'),],
 
@@ -140,7 +140,7 @@
       function startBenchmark()
       {
         playbutton.style.display = 'none';
-        Sprite.init(Module['wchip'], Module['level'], Module['background']);
+        Sprite.init(Module['wchip'], Module['map'], Module['background']);
         Sprite.animate();
       }
 

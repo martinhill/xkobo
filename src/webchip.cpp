@@ -61,7 +61,6 @@ void win_chip::torus_copy_from_chip_and_store(int x, int y, int h, int v,
 void win_chip::copy_from_chip_and_store(int x, int y, int h, int v,
                                               int x1, int x2)
 {
-    SpriteUpdate(x, y, h, v, x1, x2);
 }
 
 int win_chip::clip(int& cx, int& cy, int& x, int& y, int& h, int& v)

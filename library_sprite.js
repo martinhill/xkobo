@@ -40,7 +40,7 @@ LibrarySprite = {
             Sprite.currentFPS = 60;
 
             // each second, add severl new entities
-            Sprite.newMovingSpritesPerSecond = 10;
+            Sprite.newMovingSpritesPerSecond = 1;
             Sprite.newLevelSpritesPerSecond = 25;
             // no blank screens if the FPS is low
             Sprite.minSpriteCount = 40;
@@ -58,7 +58,7 @@ LibrarySprite = {
             Sprite.spritesheetXFrames = Sprite.spritesheetWidth / Sprite.spritesheetFrameWidth;
             Sprite.spritesheetYFrames = Sprite.spritesheetHeight / Sprite.spritesheetFrameHeight;
             Sprite.spritesheetFrames = Sprite.spritesheetXFrames * Sprite.spritesheetYFrames;
-            Sprite.sprites = [];
+            Sprite.demosprites = [];
 
             // ensure that we have requestAnimationFrame
             // this is Paul Irish's compatibility shim
@@ -89,8 +89,9 @@ LibrarySprite = {
                 while (howmany--)
                 {
                     // add one new animated sprite
-                    Sprite.sprites[Sprite.spriteCount] = new Sprite.SpriteX();
-                    demoInit(Sprite.sprites[Sprite.spritecount]);
+                    var sprite = new Sprite.SpriteX();
+                    Sprite.demoInit(sprite);
+                    Sprite.demosprites[Sprite.spriteCount] = sprite;
                     Sprite.spriteCount++;
                 }
 
@@ -98,8 +99,9 @@ LibrarySprite = {
                 while (howmany--)
                 {
                     // also add tiles to the static level geometry
-                    Sprite.levelSprites[Sprite.levelSpriteCount] = new Sprite.SpriteX(Sprite.level);
-                    demoInit(Sprite.levelSprites[Sprite.spritecount]);
+                    var sprite = new Sprite.SpriteX(Sprite.level);
+                    Sprite.demoInit(sprite);
+                    Sprite.levelSprites[Sprite.levelSpriteCount] = sprite;
                     Sprite.levelSpriteCount++;
                 }
             }
@@ -111,7 +113,7 @@ LibrarySprite = {
                 {
                     if (Sprite.spriteCount)
                     {
-                        Sprite.sprites[Sprite.spriteCount-1].destroy();
+                        Sprite.demosprites[Sprite.spriteCount-1].destroy();
                         Sprite.spriteCount--;
                     }
                 }
@@ -156,7 +158,7 @@ LibrarySprite = {
 
         demoInit: function(sprite) {
             // random starting position
-            if (sprite.parent == level) 
+            if (sprite.parent == Sprite.level) 
             {
                 sprite.x = Math.round(Math.random() * Sprite.levelW);
                 sprite.y = Math.round(Math.random() * Sprite.levelH);
@@ -235,16 +237,16 @@ LibrarySprite = {
         {
             for (var loop=0; loop < Sprite.spriteCount; loop++)
             {
-                Sprite.sprites[loop].x += Sprite.sprites[loop].xSpeed;
-                Sprite.sprites[loop].y += Sprite.sprites[loop].ySpeed;
+                Sprite.demosprites[loop].x += Sprite.demosprites[loop].xSpeed;
+                Sprite.demosprites[loop].y += Sprite.demosprites[loop].ySpeed;
 
                 // bounce at edges
-                if ((Sprite.sprites[loop].x <= 0) || (Sprite.sprites[loop].x >= Sprite.viewportW))
-                    Sprite.sprites[loop].xSpeed = -1 * Sprite.sprites[loop].xSpeed;
-                if ((Sprite.sprites[loop].y <= 0) || (Sprite.sprites[loop].y >= Sprite.viewportH))
-                    Sprite.sprites[loop].ySpeed = -1 * Sprite.sprites[loop].ySpeed;
+                if ((Sprite.demosprites[loop].x <= 0) || (Sprite.demosprites[loop].x >= Sprite.viewportW))
+                    Sprite.demosprites[loop].xSpeed = -1 * Sprite.demosprites[loop].xSpeed;
+                if ((Sprite.demosprites[loop].y <= 0) || (Sprite.demosprites[loop].y >= Sprite.viewportH))
+                    Sprite.demosprites[loop].ySpeed = -1 * Sprite.demosprites[loop].ySpeed;
 
-                Sprite.sprites[loop].reposition();
+                Sprite.demosprites[loop].reposition();
             }
 
             // also scroll the level tiles
@@ -287,7 +289,7 @@ LibrarySprite = {
     },
 
     SpriteDemoInit: function() {
-        Sprite.init(Module['wchip'], Module['level'], Module['background']);
+        Sprite.init(Module['wchip'], Module['map'], Module['background']);
     },
 
     SpriteDemoAnimate: function() {
@@ -301,7 +303,7 @@ LibrarySprite = {
             //document.addEventListener("keypress", Sprite.receiveEvent);
         }
 
-        Sprite.init(Module['wchip'], Module['level'], Module['background']);
+        Sprite.init(Module['wchip'], Module['map'], Module['background']);
         var parent = Module.parentmap[parentId];
         Sprite.sprites = new Array(Sprite.maxSprites);
         for ( var i = 0; i < Sprite.maxSprites; i++ ) {
