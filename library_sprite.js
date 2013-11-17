@@ -20,7 +20,7 @@ LibrarySprite = {
             // size of the the viewport and the larger level within
             Sprite.viewportW = viewport.clientWidth;
             Sprite.viewportH = viewport.clientHeight;
-            Sprite.levelW = level.cpplientWidth;
+            Sprite.levelW = level.clientWidth;
             Sprite.levelH = level.clientHeight;
 
             // how fast do we scroll the level tiles
