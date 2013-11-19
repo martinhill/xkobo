@@ -1,8 +1,6 @@
-# XKOBO for Mac OS X 
+# XKOBO for the Web
 
-Xkobo is a simple open-source game developed by Akira Higuchi, in 1997. It was originally for X Window system. So I thought that it would have been easily playerble on my Mac because the OS X has X Window system as built-in. However, I've noticed that it had few difficulties to be compiled. So I've patched few lines of code to have it compiled, and packaged it as an application. I hope it is useful to other Mac OS X users as well. Enjoy!
-
-Visit http://osxkobo.appspot.com for more info.
+Xkobo is a simple open-source game developed by Akira Higuchi, in 1997. It was originally for X Window system. Looking for a fun project to learn HTML5/javascript, I decided to make a port for the web. I'm compiling the C++ code to javascript with emscripten and refactoring the X11 parts to use my own library. It's a learning process for me, and hopefully others will like to play this classic game on the web. Enjoy!
 
 # License
 
