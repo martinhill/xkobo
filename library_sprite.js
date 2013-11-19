@@ -11,6 +11,7 @@ LibrarySprite = {
         currentFgColor: {},
         currentBgColor: {},
         events: [],
+        textElement: {},
         init: function(viewport, level, background) {
             Sprite.maxSprites = Module['maxSprites']; 
             Sprite.viewport = viewport;
@@ -282,6 +283,9 @@ LibrarySprite = {
             switch ( event.type ) {
                 case "keydown": case "keyup": {
                     //Module.print('Received ' + event.type + ' event. Keycode = ' + event.keyCode);
+                    if ( Module.keycodelist.indexOf(event.keyCode) > -1 ) {
+                        event.preventDefault();
+                    }
                 }
             }
 
@@ -297,24 +301,22 @@ LibrarySprite = {
     },
 
     SpriteInit: function(parentId) {
+        Sprite.init(Module['wchip'], Module['map'], Module['background']);
+
         if (!Module['doNotCaptureKeyboard']) {
             document.addEventListener("keydown", Sprite.receiveEvent);
             document.addEventListener("keyup", Sprite.receiveEvent);
             //document.addEventListener("keypress", Sprite.receiveEvent);
         }
 
-        Sprite.init(Module['wchip'], Module['map'], Module['background']);
         var parent = Module.parentmap[parentId];
         Sprite.sprites = new Array(Sprite.maxSprites);
+        Sprite.mapsprites = [];
         for ( var i = 0; i < Sprite.maxSprites; i++ ) {
             Sprite.sprites[i] = new Sprite.SpriteX(parent);
             Sprite.sprites[i].hide();
         }
         Sprite.saveUpdateIndex = 0;
-    },
-
-    SpriteBeginUpdate: function() {
-        Sprite.updateIndex = 0;
     },
 
     SpriteUpdate: function(cx, cy, h, v, x, y) {
@@ -337,6 +339,20 @@ LibrarySprite = {
 
         Sprite.saveUpdateIndex = Sprite.updateIndex;
         Sprite.updateIndex = 0;
+    },
+
+    SpriteAdd: function(cx, cy, h, v, x, y) {
+        var sprite = new Sprite.SpriteX(Sprite.level);
+        sprite.framexy(cx, cy);
+        sprite.x = x;
+        sprite.y = y;
+        sprite.reposition();
+        Sprite.mapsprites.push(sprite);
+    },
+
+    SetPosition: function(vx, vy) {
+        Sprite.level.style.left = -vx + 'px';
+        Sprite.level.style.top  = -vy + 'px';
     },
 
     PollEvent: function() {
@@ -383,11 +399,13 @@ LibrarySprite = {
             Module.printErr("clear: invalid parentId " + parentId);
             return;
         }
-        var child;
-        for ( child in parent.childNodes ) {
+        //Module.print('ClearElements(' + parentId + ')');
+        for ( var i = parent.childNodes.length - 1; i >= 0; i-- ) {
+            var child = parent.childNodes[i];
             // Remove only non-container "parent" elements
-            if ( ! child in Module.parents ) {
+            if ( Module.parents.indexOf(child) < 0 ) {
                 if ( child.className != 'sprite' ) {
+                    //Module.print('Removing node class=' + child.classname + ' content=' + child.innerHTML);
                     parent.removeChild(child);
                 } else {
                     // only hide sprites - don't remove from DOM
@@ -395,7 +413,13 @@ LibrarySprite = {
                 }
             }
         }
-        Module.print('ClearElements(' + parentId + ')');
+        for ( var key in Sprite.textElement ) {
+            if ( key.split('_')[0] == parentId ) {
+//                Module.print('ClearElements deleting Sprite.textElement[' + key + '] (' + 
+//                            Sprite.textElement[key].innerHTML + ')');
+                delete Sprite.textElement[key];
+            }
+        }
     },
 
     SelectFont: function(parentId, s) {
@@ -416,22 +440,28 @@ LibrarySprite = {
     
     AddTextElement: function(parentId, x, y, text) {
         text = Pointer_stringify(text);
+        // generate unique key based on the placement of the text
+        var key = parentId + '_' + x + '_' + y;
         var parent = Module.parentmap[parentId] || Module.viewport;
-        // create a DOM sprite
-        var element = document.createElement("div");
-        element.className = Sprite.currentTextClass[parentId];
-        element.innerHTML = text;
-        // optimized pointer to style object
-        var style = element.style;
+        var element = Sprite.textElement[key];
+        if ( ! element ) {
+            // create a DOM element
+            element = document.createElement("div");
+            element.className = Sprite.currentTextClass[parentId];
+            // optimized pointer to style object
+            var style = element.style;
+            style.left = x + 'px';
+            style.top = y + 'px';
+            // put it into the game window
+            parent.appendChild(element);
+            Sprite.textElement[key] = element;
+        }
         // set color
         var fgcolor = Sprite.currentFgColor[parentId];
         if ( fgcolor ) {
-            style.color = '#' + fgcolor.toString(16);
+            element.style.color = '#' + fgcolor.toString(16);
         }
-        style.left = x + 'px';
-        style.top = y + 'px';
-        // put it into the game window
-        parent.appendChild(element);
+        element.innerHTML = text;
         //Module.print('AddTextElement('+ parentId + ', ' + x + ', ' + y + ', ' + text + ')');
     },
 

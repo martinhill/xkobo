@@ -61,6 +61,7 @@ void win_chip::torus_copy_from_chip_and_store(int x, int y, int h, int v,
 void win_chip::copy_from_chip_and_store(int x, int y, int h, int v,
                                               int x1, int x2)
 {
+    SpriteAdd(x, y, h, v, x1, x2);
 }
 
 int win_chip::clip(int& cx, int& cy, int& x, int& y, int& h, int& v)
@@ -102,6 +103,9 @@ void win_chip::set_position(int vposx, int vposy)
         SpriteUpdate(spp->cx, spp->cy, spp->h, spp->v, spp->x-vx, spp->y-vy);
     }
     SpriteEndUpdate();
+
+    // Move map to position
+    SetPosition(vx, vy);
 
     spr_max = sprite;
 }

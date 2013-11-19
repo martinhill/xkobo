@@ -33,9 +33,10 @@ extern "C" {
 #endif
 
 extern void SpriteInit(int parentId);
-extern void SpriteBeginUpdate();
 extern void SpriteUpdate(int cx, int cy, int h, int v, int x, int y);
 extern void SpriteEndUpdate();
+extern void SpriteAdd(int cx, int cy, int h, int v, int x, int y);
+extern void SetPosition(int vx, int vy);
 
 // DOM
 extern void SelectFont(int parentId, char* s);

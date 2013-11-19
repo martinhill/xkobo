@@ -48,7 +48,7 @@ extern "C"{
 win_cmap        wbase;
 win_chip        wchip;
 win_backing     wradar;
-//win_backing     wscore;
+win_backing     wscore;
 int             scale_log2;
 int             mouse_x = 0;
 int             mouse_y = 0;
@@ -219,10 +219,10 @@ int main(int argc, char *argv[])
     wchip .event(MotionNotify,  &motion_callback        );
     wchip .event(LeaveNotify,   &leave_callback         );
 #else
-    //SpriteDemoInit();
     wbase.setId(0);
     wchip.setId(1);
-    wradar.setId(2);
+    wradar.setId(3);
+    wscore.setId(4);
 #endif
     
     wbase.make(NULL, 0, 0,

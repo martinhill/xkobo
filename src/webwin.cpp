@@ -41,6 +41,7 @@ win::win()
     for ( int i = 0; i < EVENTMAX; i++ ) {
         ec[i] = NULL;
     }
+    pId = -1;
 }
 
 win::~win()

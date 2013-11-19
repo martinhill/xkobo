@@ -46,10 +46,6 @@ void win_scroll::make(win *back,int wx,int wy, int sizex,int sizey,
     this->win::make(back,wx,wy,sizex,sizey);
 }
 
-void win_scroll::clear()
-{
-}
-
 void win_scroll::expose_backing()
 {
 }

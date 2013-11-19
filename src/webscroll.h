@@ -44,7 +44,6 @@ class win_scroll : public win_backing{
     ~win_scroll();
     void make(win *back, int wx, int wy, int sizex, int sizey,
               int vsizex, int vsizey);
-    void clear();
     virtual void expose_backing();                 /* from eventroop() */
     void set_position(int vposx, int vposy);
     void torus();

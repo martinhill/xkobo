@@ -96,21 +96,23 @@
             "-adobe-new century schoolbook-bold-r-normal--24-240-75-75-p-149-*":"title"
         },
         parents: [ document.getElementById('viewport'), 
-                    document.getElementById('wchip'),
-                    document.getElementById('map'),
-                    document.getElementById('background'),
-                    document.getElementById('wradar'),],
-
+                   document.getElementById('wchip'),
+                   document.getElementById('map'),
+                   document.getElementById('background'),
+                   document.getElementById('wradar')
+        ],
         parentmap: {
             0: document.getElementById('viewport'),
             1: document.getElementById('wchip'),
-            2: document.getElementById('wradar'),
+            2: document.getElementById('map'),
+            3: document.getElementById('wradar')
         },
         // These match the event types in js.h
         eventTypes: {
                       'keydown': 2,
                       'keyup': 3
         },
+        keycodelist: [ 37, 38, 39, 40 ],
         maxSprites: 1024,
         setStatus: function(text) {
           if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);
