@@ -58,10 +58,31 @@ void win_chip::torus_copy_from_chip_and_store(int x, int y, int h, int v,
     }
 }
 
+void win_chip::torus_remove_chip(int x1, int x2)
+{
+    this->remove_chip(x1, x2);
+    if (x1 < sx){
+        this->remove_chip(x1+vsx-sx,x2);
+        if (x2 < sy){
+            this->remove_chip(x1,x2+vsy-sy);
+            this->remove_chip(x1+vsx-sx,x2+vsy-sy);
+        }
+    }
+    else if (x2 < sy){
+        this->remove_chip(x1,x2+vsy-sy);
+    }
+
+}
+
 void win_chip::copy_from_chip_and_store(int x, int y, int h, int v,
                                               int x1, int x2)
 {
     SpriteAdd(x, y, h, v, x1, x2);
+}
+
+void win_chip::remove_chip(int x, int y)
+{
+    SpriteRemove(x, y);
 }
 
 int win_chip::clip(int& cx, int& cy, int& x, int& y, int& h, int& v)
@@ -90,6 +111,14 @@ int win_chip::clip(int& cx, int& cy, int& x, int& y, int& h, int& v)
 
 void win_chip::store()
 {
+}
+
+void win_chip::clear()
+{
+    // Remove the moving sprites
+    win_scroll::clear();
+    // Remove all the map sprites
+    SpriteRemoveAll();
 }
 
 void win_chip::set_position(int vposx, int vposy)

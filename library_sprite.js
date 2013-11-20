@@ -311,7 +311,7 @@ LibrarySprite = {
 
         var parent = Module.parentmap[parentId];
         Sprite.sprites = new Array(Sprite.maxSprites);
-        Sprite.mapsprites = [];
+        Sprite.mapsprites = {};
         for ( var i = 0; i < Sprite.maxSprites; i++ ) {
             Sprite.sprites[i] = new Sprite.SpriteX(parent);
             Sprite.sprites[i].hide();
@@ -347,7 +347,28 @@ LibrarySprite = {
         sprite.x = x;
         sprite.y = y;
         sprite.reposition();
-        Sprite.mapsprites.push(sprite);
+        Sprite.mapsprites[x + "_" + y] = sprite;
+    },
+
+    SpriteRemove: function(x, y) {
+        var key = x + "_" + y;
+        var sprite = Sprite.mapsprites[key];
+        if ( sprite ) {
+            sprite.destroy();
+            delete Sprite.mapsprites[key];
+        }
+    },
+
+    SpriteRemoveAll: function() {
+        var count = 0;
+        for ( var key in Sprite.mapsprites ) {
+            if ( Sprite.mapsprites.hasOwnProperty(key) ) {
+                Sprite.mapsprites[key].destroy();
+                delete Sprite.mapsprites[key];
+                count++;
+            }
+        }
+        //Module.print("SpriteRemoveAll removed " + count + " map sprites");
     },
 
     SetPosition: function(vx, vy) {

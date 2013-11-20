@@ -53,11 +53,14 @@ class win_chip : public win_scroll{
               int vsizex, int vsizey, int csizex, int csizey, int policy);
     void torus_copy_from_chip_and_store(int x, int y, int h, int v,
                                         int x1, int x2);
+    void torus_remove_chip(int x1, int x2);
     void copy_from_chip_and_store(int x, int y, int h, int v,
                                   int x1, int x2);
+    void remove_chip(int x1, int x2);
     inline void copy_from_chip_sprite(int x, int y, int h, int v,
                                       int x1, int x2);
     void store();
+    void clear();
     void set_position(int vposx, int vposy);
     // friend int link_tiff(unsigned char *data, win_cmap& wcm, win_chip& wch);
 };

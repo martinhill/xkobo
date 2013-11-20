@@ -219,6 +219,14 @@ int _screen::get_chip_number(int x, int y)
 void _screen::set_chip_number(int x, int y, int n)
 {
     map.pos(x, y) = n;
+#ifndef EMSCRIPTEN
     _screen::copy_a_chip(n, x, y);
     if (n == 0) radar.erase(x, y);
+#else
+    if (n == 0) {
+        wchip.torus_remove_chip(x<<(CHIP_SIZEX_LOG2+scale_log2), 
+                                y<<(CHIP_SIZEY_LOG2+scale_log2));
+        radar.erase(x, y);
+    }
+#endif
 }

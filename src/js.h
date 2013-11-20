@@ -36,6 +36,8 @@ extern void SpriteInit(int parentId);
 extern void SpriteUpdate(int cx, int cy, int h, int v, int x, int y);
 extern void SpriteEndUpdate();
 extern void SpriteAdd(int cx, int cy, int h, int v, int x, int y);
+extern void SpriteRemove(int x, int y);
+extern void SpriteRemoveAll();
 extern void SetPosition(int vx, int vy);
 
 // DOM
