@@ -486,6 +486,17 @@ LibrarySprite = {
         //Module.print('AddTextElement('+ parentId + ', ' + x + ', ' + y + ', ' + text + ')');
     },
 
+    DrawPoint: function(parentId, x, y) {
+        var canvas = Module.parentmap[parentId];
+        var ctx = canvas.getContext('2d');
+        var fgcolor = Sprite.currentFgColor[parentId];
+        if ( fgcolor ) {
+            ctx.fillStyle = '#' + fgcolor.toString(16);
+        }
+        ctx.fillRect(x, y, 1, 1);
+        //Module.print('DrawPoint(' + parentId + ', ' + x + ', ' + y + ')');
+    },
+
     XDebug: function(str) {
         str = Pointer_stringify(str);
         console.log(str);

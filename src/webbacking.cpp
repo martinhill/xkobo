@@ -78,6 +78,11 @@ void win_backing::warp_pointer(int x, int y)
 {
 }
 
+void win_backing::point(int x,int y)
+{
+    DrawPoint(pId, x, y);
+}
+
 void win_backing::string_back(int x,int y,char *t)
 { 
     AddTextElement(pId, x,y,t); 

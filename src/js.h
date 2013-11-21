@@ -47,6 +47,10 @@ extern void SetBackgroundColor(int parentId, int color);
 extern void AddTextElement(int parentId, int x, int y, char* text);
 extern void ClearElements(int parentId);
 
+// Canvas
+
+extern void DrawPoint(int parentId, int x, int y);
+
 // Events
 extern int  PollEvent();
 extern int  GetEventType();

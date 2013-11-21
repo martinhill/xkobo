@@ -53,7 +53,7 @@ class win_backing : public win{
     void warp_pointer(int x, int y);
     inline void point_back(int x,int y){};
         // XDrawPoint(disp,p,gc,x,y);}
-    inline void point(int x,int y){};
+    void point(int x,int y);
         // XDrawPoint(disp,p,gc,x,y);XDrawPoint(disp,w,gc,x,y);}
     void string_back(int x,int y,char *t);
         // XDrawImageString(disp,p,gc,x,y,t,strlen(t));}
