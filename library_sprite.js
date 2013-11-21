@@ -417,7 +417,7 @@ LibrarySprite = {
     ClearElements: function(parentId) {
         var parent = Module.parentmap[parentId];
         if ( !parent  ) {
-            Module.printErr("clear: invalid parentId " + parentId);
+            Module.printErr("ClearElements: invalid parentId " + parentId);
             return;
         }
         //Module.print('ClearElements(' + parentId + ')');
@@ -486,15 +486,32 @@ LibrarySprite = {
         //Module.print('AddTextElement('+ parentId + ', ' + x + ', ' + y + ', ' + text + ')');
     },
 
-    DrawPoint: function(parentId, x, y) {
-        var canvas = Module.parentmap[parentId];
+    DrawPoint: function(id, x, y) {
+        var canvas = Module.parentmap[id];
         var ctx = canvas.getContext('2d');
-        var fgcolor = Sprite.currentFgColor[parentId];
+        var fgcolor = Sprite.currentFgColor[id];
         if ( fgcolor ) {
             ctx.fillStyle = '#' + fgcolor.toString(16);
         }
         ctx.fillRect(x, y, 1, 1);
-        //Module.print('DrawPoint(' + parentId + ', ' + x + ', ' + y + ')');
+        //Module.print('DrawPoint(' + id + ', ' + x + ', ' + y + ')');
+    },
+
+    ClearCanvas: function(id) {
+        var canvas = Module.parentmap[id];
+        if ( !canvas  ) {
+            Module.printErr("ClearCanvas: invalid id " + id);
+            return;
+        }
+        // check if it's a canvas
+        if ( canvas && typeof canvas.getContext === 'function' ) {
+            var ctx = canvas.getContext('2d');
+            var bgcolor = Sprite.currentBgColor[id];
+            if ( bgcolor ) {
+                ctx.fillStyle = '#' + bgcolor.toString(16);
+            }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
     },
 
     XDebug: function(str) {

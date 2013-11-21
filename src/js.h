@@ -50,6 +50,7 @@ extern void ClearElements(int parentId);
 // Canvas
 
 extern void DrawPoint(int parentId, int x, int y);
+extern void ClearCanvas(int parentId);
 
 // Events
 extern int  PollEvent();

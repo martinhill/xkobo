@@ -53,6 +53,7 @@ void win_backing::expose_backing()
 void win_backing::clear()
 {
     ClearElements(pId);
+    ClearCanvas(pId);
 }
 
 void win_backing::clear(int x,int y,int h,int v)
