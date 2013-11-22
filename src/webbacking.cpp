@@ -81,7 +81,7 @@ void win_backing::warp_pointer(int x, int y)
 
 void win_backing::point(int x,int y)
 {
-    DrawPoint(pId, x, y);
+    FillRect(pId, x, y, 1, 1);
 }
 
 void win_backing::string_back(int x,int y,char *t)
@@ -93,3 +93,9 @@ void win_backing::string(int x,int y,char *t)
 { 
     AddTextElement(pId, x,y,t); 
 }
+
+void win_backing::fillrectangle(int x,int y,int h,int v)
+{
+    FillRect(pId, x, y, v, h);
+}
+

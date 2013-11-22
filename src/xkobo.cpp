@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
     value.it_value.tv_usec = wait_msec * 1000;
     
 #ifdef EMSCRIPTEN
-    emscripten_set_main_loop(one_iter, 0, false);
+    emscripten_set_main_loop(one_iter, 1000/wait_msec, false);
 #else
     setitimer(ITIMER_REAL, &value, &ovalue);
 

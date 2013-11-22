@@ -67,7 +67,7 @@ class win_backing : public win{
         // XDrawRectangle(disp,w,gc,x,y,h,v);}
     inline void fillrectangle_back(int x,int y,int h,int v){};
         // XFillRectangle(disp,p,gc,x,y,h,v);}
-    inline void fillrectangle(int x,int y,int h,int v){};
+    void fillrectangle(int x,int y,int h,int v);
         // XFillRectangle(disp,p,gc,x,y,h,v);
         // XFillRectangle(disp,w,gc,x,y,h,v);}
     inline void back(){};

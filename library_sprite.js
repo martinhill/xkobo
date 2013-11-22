@@ -61,6 +61,10 @@ LibrarySprite = {
             Sprite.spritesheetFrames = Sprite.spritesheetXFrames * Sprite.spritesheetYFrames;
             Sprite.demosprites = [];
 
+            // can this web brower handle CSS3 transforms (to trigger HW accel?)
+            Sprite.has3d = ('WebKitCSSMatrix' in window && 'm11' in new WebKitCSSMatrix());
+            if (window.console) console.log ('Browser is capable of CSS3 transform3d: ' + Sprite.has3d);
+
             // ensure that we have requestAnimationFrame
             // this is Paul Irish's compatibility shim
             if (!window.requestAnimationFrame) 
@@ -180,44 +184,59 @@ LibrarySprite = {
             sprite.frame(Sprite.spriteCount);
         },
 
+        repositionSprite: function () {
+            if (!this) return;
+
+            // CSS3 version - forces hardware accel on mobile
+            // Surprisingly, this is SLOWER on PC Windows using Chrome	
+            // but may be faster on iOS and other mobile platforms
+            if (Module.use3d && Sprite.has3d)
+            {
+                this.style.webkitTransform = 'translate3d('+this.x+'px,'+this.y+'px,0px)';
+            }
+            else
+            {
+                this.style.left = this.x + 'px';
+                this.style.top = this.y + 'px';
+            }
+        },
+        changeSpriteFrame: function (num) {
+            if (!this) return;
+            this.style.backgroundPosition = 
+                (-1 * (num % Sprite.spritesheetXFrames) * Sprite.spritesheetFrameWidth + 'px ') +
+                (-1 * (Math.round(num / Sprite.spritesheetXFrames) % Sprite.spritesheetYFrames)) 
+                * Sprite.spritesheetFrameHeight + 'px ';
+        },
+        destroySprite: function () {
+            if (!this) return;
+            this.parent.removeChild(this.element);
+        },
+        changeSpriteFrameXY: function (x, y) {
+            if (!this) return;
+            this.style.backgroundPosition =
+                (-1 * x) + 'px ' + (-1 * y) + 'px ';
+        },
+        showSprite: function () {
+            this.style.visibility = 'visible';
+        },
+        hideSprite: function () {
+            this.style.visibility = 'hidden';
+        },
+
         // the sprite class - DOM sprite version
         SpriteX: (function() {
+
             function SpriteX (parentElement) {
                 // function references
-                this.reposition = function () {
-                    if (!this) return;
-
-                    // CSS3 version - forces hardware accel on mobile
-                    // Surprisingly, this is SLOWER on PC Windows using Chrome	
-                    // but may be faster on iOS and other mobile platforms
-                    this.style.left = this.x + 'px';
-                    this.style.top = this.y + 'px';
-                };
+                this.reposition = Sprite.repositionSprite;
                 // changes the spritesheet frame of a sprite
                 // by shifting the background image location
-                this.frame = function (num) {
-                    if (!this) return;
-                    this.style.backgroundPosition = 
-            (-1 * (num % Sprite.spritesheetXFrames) * Sprite.spritesheetFrameWidth + 'px ') +
-            (-1 * (Math.round(num / Sprite.spritesheetXFrames) % Sprite.spritesheetYFrames)) 
-            * Sprite.spritesheetFrameHeight + 'px ';
-                };
-                this.framexy = function(x, y) {
-                    if (!this) return;
-                    this.style.backgroundPosition =
-                        (-1 * x) + 'px ' + (-1 * y) + 'px ';
-                };
-                this.show = function() {
-                    this.style.visibility = 'visible';
-                };
-                this.hide = function() {
-                    this.style.visibility = 'hidden';
-                };
+                this.frame = Sprite.changeSpriteFrame;
+                this.framexy = Sprite.changeSpriteFrameXY;
+                this.show = Sprite.showSprite;
+                this.hide = Sprite.hideSprite;
                 // removes a sprite from a container DOM element
-                this.destroy = function () {
-                    if (!this) return;
-                    this.parent.removeChild(this.element);
-                };
+                this.destroy = Sprite.destroySprite;
                 // where do this sprite live? (default: viewport)
                 this.parent = parentElement ? parentElement : Sprite.viewport;
                 // create a DOM sprite
@@ -486,14 +505,14 @@ LibrarySprite = {
         //Module.print('AddTextElement('+ parentId + ', ' + x + ', ' + y + ', ' + text + ')');
     },
 
-    DrawPoint: function(id, x, y) {
+    FillRect: function(id, x, y, w, h) {
         var canvas = Module.parentmap[id];
         var ctx = canvas.getContext('2d');
         var fgcolor = Sprite.currentFgColor[id];
         if ( fgcolor ) {
             ctx.fillStyle = '#' + fgcolor.toString(16);
         }
-        ctx.fillRect(x, y, 1, 1);
+        ctx.fillRect(x, y, w, h);
         //Module.print('DrawPoint(' + id + ', ' + x + ', ' + y + ')');
     },
 
