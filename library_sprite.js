@@ -198,6 +198,10 @@ LibrarySprite = {
             {
                 this.style.left = this.x + 'px';
                 this.style.top = this.y + 'px';
+                if ( this.hasOwnProperty('w') && this.hasOwnProperty('h') ) {
+                    this.style.width = this.w + 'px';
+                    this.style.height = this.h + 'px';
+                }
             }
         },
         changeSpriteFrame: function (num) {
@@ -344,6 +348,8 @@ LibrarySprite = {
             sprite.framexy(cx, cy);
             sprite.x = x;
             sprite.y = y;
+            sprite.w = h;
+            sprite.h = v;
             sprite.reposition();
             sprite.show();
             //Module.print('SpriteUpdate( ' + cx + ', ' + cy + ', ' + h + ', ' + v + ', ' + x + ', ' + y + ')');
