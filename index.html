@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>xkobo</title>
+    <style>
+      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
+      textarea.emscripten { font-family: monospace; width: 80%; }
+      div.emscripten { text-align: center; }
+      div.emscripten_border { border: 1px solid black; height:250px }
+      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+      canvas.emscripten { border: 0px none; }
+      #stats { width:100%; bottom:24px; left:0px; }
+      #playbutton { width:200px; padding:4px; border-radius:16px; border:2px solid black; background:#666666; color:white; 
+          text-decoration:none; font-family:arial; font-weight:bold; text-align:center; }
+      #playbutton:hover { background:red; }
+      #viewport { width:326px; height:250px; position:absolute; overflow:hidden; background:black; color:white;
+          left:50%; margin-left:-163px; }
+      #map { position:absolute; width:2048px; height:100%; top:0px; left:0px; background:black; }
+      #wchip { position:absolute; margin:12px; padding:0; border:0; outline:0; 
+               overflow:hidden; width:226px; height:226px; top:0px; left:0px; background:black; }
+      #wradar { position:absolute; padding:0; border:0; outline:0;
+                overflow:hidden; width:64px; height:128px; top:110px; left:250px; background:#213041; }
+      .sprite { position:absolute; margin:0; padding:0; border:0; outline:0; 
+                background-image:url(resources/xkp256.png); width:16px; height:16px; }
+      .normal { position:absolute; background:black; color:white; 
+                font-family:helvetica; font-weight:bold; font-size:12px; margin-top:-10px }
+      .title { position:absolute; background:black; color:#cbffff; font-family:"New Century Schoolbook", serif; 
+              font-weight:bold; font-size:26px; margin-top:-22px }
+    </style>
+  </head>
+  <body>
+    <hr/>
+    <div class="emscripten" id="status">Downloading...</div>
+    <div class="emscripten">
+      <progress value="0" max="100" id="progress" hidden=1></progress>  
+    </div>
+    <div class="emscripten_border">
+      <div id="viewport"><div id="wchip"><div id="background"><div id="map"></div></div></div>
+        <canvas id="wradar" width="64" height="128"></canvas></div>
+     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    </div>
+    <div id='stats'></div>
+    <hr/>
+    <div class="emscripten">
+      <input type="checkbox" id="resize">Resize canvas
+      <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
+      &nbsp;&nbsp;&nbsp;
+      <input type="button" value="Fullscreen" onclick="Module.requestFullScreen(document.getElementById('pointerLock').checked, 
+                                                                                document.getElementById('resize').checked)">
+      &nbsp;&nbsp;
+      <!--a id='playbutton' href='javascript:startBenchmark()'>start demo</a-->
+    </div>
+    
+    <hr/>
+    <textarea class="emscripten" id="output" rows="8"></textarea>
+    <hr>
+    <script type='text/javascript'>
+      // connect to canvas
+      var Module = {
+        preRun: [],
+        postRun: [],
+        arguments: [],
+        print: (function() {
+          var element = document.getElementById('output');
+          element.value = ''; // clear browser cache
+          return function(text) {
+            text = Array.prototype.slice.call(arguments).join(' ');
+            // These replacements are necessary if you render to raw HTML
+            //text = text.replace(/&/g, "&amp;");
+            //text = text.replace(/</g, "&lt;");
+            //text = text.replace(/>/g, "&gt;");
+            //text = text.replace('\n', '<br>', 'g');
+            element.value += text + "\n";
+            element.scrollTop = 99999; // focus on bottom
+          };
+        })(),
+        printErr: function(text) {
+          text = Array.prototype.slice.call(arguments).join(' ');
+          if (0) { // XXX disabled for safety typeof dump == 'function') {
+            dump(text + '\n'); // fast, straight to the real console
+          } else {
+            console.log(text);
+          }
+        },
+        viewport: document.getElementById('viewport'),
+        wchip: document.getElementById('wchip'),
+        // next 3 attributes used by demo animation code - remove when no longer needed!
+        background: document.getElementById('background'),
+        map: document.getElementById('map'),
+        playbutton: document.getElementById('playbutton'),
+
+        canvas: document.getElementById('viewport'),
+        fontmap: { 
+            def:"text",
+            "-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1":"normal",
+            "-adobe-new century schoolbook-bold-r-normal--24-240-75-75-p-149-*":"title"
+        },
+        parents: [ document.getElementById('viewport'), 
+                   document.getElementById('wchip'),
+                   document.getElementById('map'),
+                   document.getElementById('background'),
+                   document.getElementById('wradar')
+        ],
+        parentmap: {
+            0: document.getElementById('viewport'),
+            1: document.getElementById('wchip'),
+            2: document.getElementById('map'),
+            3: document.getElementById('wradar')
+        },
+        // These match the event types in js.h
+        eventTypes: {
+                      'keydown': 2,
+                      'keyup': 3
+        },
+        keycodelist: [ 37, 38, 39, 40 ],
+        maxSprites: 1024,
+        use3d: false,
+        setStatus: function(text) {
+          if (Module.setStatus.interval) clearInterval(Module.setStatus.interval);
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var statusElement = document.getElementById('status');
+          var progressElement = document.getElementById('progress');
+          if (m) {
+            text = m[1];
+            progressElement.value = parseInt(m[2])*100;
+            progressElement.max = parseInt(m[4])*100;
+            progressElement.hidden = false;
+          } else {
+            progressElement.value = null;
+            progressElement.max = null;
+            progressElement.hidden = true;
+          }
+          statusElement.innerHTML = text;
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
+      };
+      Module.setStatus('Downloading...');
+      // start your engines!
+      function startBenchmark()
+      {
+        playbutton.style.display = 'none';
+        Sprite.init(Module['wchip'], Module['map'], Module['background']);
+        Sprite.animate();
+      }
+
+    </script>
+    <script async type="text/javascript" src="xkobo.js"></script>
+  </body>
+</html>
