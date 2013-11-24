@@ -1,6 +1,6 @@
 #!/bin/sh
 SRC=src
-export OPTIMIZE_OPTION=
+export OPTIMIZE_OPTION=${1}
 export HSCORE_DIR=
 
 (cd $SRC; emmake make)

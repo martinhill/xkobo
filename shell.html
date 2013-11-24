@@ -50,7 +50,7 @@
       <input type="button" value="Fullscreen" onclick="Module.requestFullScreen(document.getElementById('pointerLock').checked, 
                                                                                 document.getElementById('resize').checked)">
       &nbsp;&nbsp;
-      <a id='playbutton' href='javascript:startBenchmark()'>start demo</a>
+      <!--a id='playbutton' href='javascript:startBenchmark()'>start demo</a-->
     </div>
     
     <hr/>
@@ -91,7 +91,7 @@
         map: document.getElementById('map'),
         playbutton: document.getElementById('playbutton'),
 
-        canvas: document.getElementById('canvas'),
+        canvas: document.getElementById('viewport'),
         fontmap: { 
             def:"text",
             "-adobe-helvetica-bold-r-normal--12-120-75-75-p-70-iso8859-1":"normal",
@@ -150,6 +150,6 @@
       }
 
     </script>
-    <script type='text/javascript'>{{{ SCRIPT_CODE }}}</script>
+    {{{ SCRIPT }}}
   </body>
 </html>
